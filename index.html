@@ -120,9 +120,9 @@
 
   const graticule = d3.geoGraticule().step([30, 30]);
   gridGroup1.append("path").datum(graticule()).attr("class", "grid-line").attr("d", path);
-gridGroup1.style("display", "none");
+  gridGroup1.style("display", "none");
   gridGroup2.append("path").datum(graticule()).attr("class", "grid-line").attr("d", path).attr("transform", `translate(${vw},0)`);
-gridGroup2.style("display", "none");
+  gridGroup2.style("display", "none");
 
   const equator = { type: "LineString", coordinates: d3.range(-180, 181, 1).map(lon => [lon, 0]) };
   equatorGroup1.append("path").datum(equator).attr("class", "equator-line").attr("d", path);
@@ -272,6 +272,11 @@ gridGroup2.style("display", "none");
   });
 
   updateColors();
+
+  // === 타이틀 클릭 시 '초기화' 버튼 클릭 효과 ===
+  document.querySelector('header span').addEventListener('click', () => {
+    document.getElementById('resetZoom').click();
+  });
 })();
 </script>
   <script>
@@ -325,4 +330,3 @@ gridGroup2.style("display", "none");
 <footer style="position: fixed; bottom: 6px; right: 10px; font-size: 9px; color: #999; z-index: 999;"><a href="https://geotasoo.com" target="_blank" style="color: inherit; text-decoration: none;">@geotasoo</a></footer>
 </body>
 </html>
-
