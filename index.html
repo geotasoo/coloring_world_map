@@ -38,9 +38,22 @@
       transform: scale(1.2);
       border-color: #333;
     }
-    /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
     header span { cursor: pointer; }
-    /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+    /* ◆ 추가: 마우스 따라다니는 툴팁 */
+    #tooltip {
+      position: fixed;
+      display: none;
+      padding: 4px 6px;
+      font-size: 12px;
+      color: #fff;
+      background: rgba(0,0,0,0.75);
+      border-radius: 4px;
+      pointer-events: none;
+      transform: translate(10px, 10px); /* 커서에서 살짝 떨어지게 */
+      z-index: 9999;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -73,6 +86,7 @@
       </select>
     </label>
     <label>선 굵기:
+      <!-- ★ 유지: max=1.0 -->
       <input type="range" id="strokeWidth" min="0.1" max="1.0" step="0.1" value="0.3">
       <span id="strokeValue">0.3px</span>
     </label>
@@ -85,6 +99,10 @@
     <button id="savePng">PNG 저장</button>
     <span id="zoomLevel">확대 레벨: 1.00</span>
   </div>
+
+  <!-- ◆ 추가: 툴팁 엘리먼트 -->
+  <div id="tooltip"></div>
+
   <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -142,6 +160,9 @@
   const features = topojson.feature(world, world.objects.countries).features;
   const countryColors = new Map();
 
+  // ◆ 추가: 툴팁 셀렉터
+  const tooltip = d3.select('#tooltip');
+
   [mapGroup1, mapGroup2].forEach(group => {
     const countries = group.selectAll("path.country")
       .data(features)
@@ -155,7 +176,20 @@
         if (countryColors.has(id)) countryColors.delete(id);
         else countryColors.set(id, document.getElementById("colorPicker").value);
         updateColors();
+      })
+      // ◆ 추가: 호버 시 툴팁 표시/이동/숨김
+      .on("mousemove", (event, d) => {
+        tooltip
+          .style("display", "block")
+          .text(d.properties.name)
+          .style("left", (event.clientX + 10) + "px")
+          .style("top", (event.clientY + 10) + "px");
+      })
+      .on("mouseleave", () => {
+        tooltip.style("display", "none");
       });
+
+    // 기존 브라우저 기본 툴팁(title) 유지 (원하시면 제거 가능)
     countries.append("title").text(d => d.properties.name);
   });
 
@@ -282,6 +316,7 @@
   });
 })();
 </script>
+
   <script>
     document.getElementById('savePng').addEventListener('click', () => {
       const svgNode = document.getElementById('map');
@@ -330,6 +365,7 @@
       image.src = url;
     });
   </script>
+
 <footer style="position: fixed; bottom: 6px; right: 10px; font-size: 9px; color: #999; z-index: 999;"><a href="https://geotasoo.com" target="_blank" style="color: inherit; text-decoration: none;">@geotasoo</a></footer>
 </body>
 </html>
