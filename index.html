@@ -64,7 +64,7 @@
     <a href="https://forms.gle/Bn5vasnSx5F7fiEQ7" target="_blank" data-tip="생각보내기" style="color: #fff; font-size: 18px; text-decoration: none;">📝</a>
     <a href="https://buymeacoffee.com/geotasoo" target="_blank" data-tip="커피보내기" style="color: #fff; font-size: 18px; text-decoration: none;">☕</a>
     <a href="https://geotasoo.com/2025/06/26/%ec%84%b8%ea%b3%84%ec%a7%80%eb%8f%84-%ec%83%89%ec%b9%a0%ed%95%98%ea%b8%b0/" target="_blank" data-tip="사용법보기" style="color: #fff; font-size: 18px; text-decoration: none;">🏃🏻‍➡️</a>
-    <div id="linkTooltip" style="display:none; position:absolute; bottom:-30px; background:rgba(0,0,0,0.8); color:#fff; font-size:12px; padding:4px 6px; border-radius:4px; white-space:nowrap; pointer-events:none;"></div>
+    <div id="linkTooltip" style="display:none; position:fixed; background:rgba(0,0,0,0.8); color:#fff; font-size:12px; padding:4px 6px; border-radius:4px; white-space:nowrap; pointer-events:none; z-index:9999;"></div>
   </div>
 </header>
 
@@ -73,17 +73,21 @@
   const tooltip = document.getElementById('linkTooltip');
 
   iconLinks.forEach(link => {
-    link.addEventListener('mouseenter', (e) => {
+    link.addEventListener('pointerenter', (e) => {
       tooltip.textContent = link.dataset.tip;
       tooltip.style.display = 'block';
-      const rect = e.target.getBoundingClientRect();
-      tooltip.style.left = (e.target.offsetLeft - tooltip.offsetWidth/2 + e.target.offsetWidth/2) + 'px';
     });
-    link.addEventListener('mouseleave', () => {
+    link.addEventListener('pointermove', (e) => {
+      // 커서 왼쪽 아래로 살짝 치우쳐 위치
+      tooltip.style.left = (e.clientX - tooltip.offsetWidth - 10) + 'px';
+      tooltip.style.top = (e.clientY + 20) + 'px';
+    });
+    link.addEventListener('pointerleave', () => {
       tooltip.style.display = 'none';
     });
   });
 </script>
+
 
 
   <div id="toolbar">
