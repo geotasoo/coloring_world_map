@@ -3,149 +3,505 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🗺️ 세계지도 색칠하기</title>
+  <title>🗺️ 세계지도 색칠하기 & 점찍기</title>
   <style>
-    html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
-    body { display: flex; flex-direction: column; font-family: sans-serif; }
-    #toolbar {
-      background: #f8f8f8;
-      padding: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-      flex: 0 0 auto;
-    }
-    #map {
-      flex: 1 1 auto;
-      width: 100%;
-      height: 100%;
-    }
-    .country { cursor: pointer; stroke: #666; stroke-width: 0.3px; }
-    .selected { stroke: #333; }
-    .labels { font-size: 10px; fill: #333; pointer-events: none; }
-    .equator-line { fill: none; stroke: red; stroke-width: 0.3px; }
-    .grid-line { stroke: #cccccc; stroke-width: 0.5px; stroke-dasharray: 2 2; fill: none; }
-    .palette-box {
-      width: 20px;
-      height: 20px;
-      border: 1px solid #aaa;
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease;
-    }
-    .palette-box:hover {
-      transform: scale(1.2);
-      border-color: #333;
-    }
-    header span { cursor: pointer; }
+    /* ========== 기본 ========== */
+    html, body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; }
+    body { display:flex; flex-direction:column; font-family:sans-serif; }
 
-    /* ◆ 커스텀 툴팁: 즉각 표시 + 커서 추적 */
-    #tooltip {
-      position: fixed;
-      display: none;
-      padding: 4px 6px;
-      font-size: 12px;
-      color: #fff;
-      background: rgba(0,0,0,0.8);
-      border-radius: 4px;
-      pointer-events: none;
-      z-index: 9999;
-      white-space: nowrap;
-      transform: translate(0, 0);
-      will-change: transform;
+    /* ========== 헤더 ========== */
+    #header {
+      background:#0F6E56; color:#fff; padding:10px; font-size:18px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-shrink:0;
     }
+    #header span.title { cursor:pointer; }
+    #iconLinks { display:flex; gap:12px; align-items:center; position:relative; }
+    #iconLinks a { color:#fff; font-size:18px; text-decoration:none; }
+
+    /* ========== 툴바 ========== */
+    #toolbar {
+      background:#f8f8f8; padding:8px;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      border-bottom:1px solid #ddd; flex:0 0 auto;
+    }
+
+    /* 툴바 버튼 공통 */
+    .tb-btn {
+      border:1px solid #ccc; border-radius:4px;
+      padding:5px 10px; cursor:pointer;
+      background:#f8f8f8; font-size:13px;
+    }
+    .tb-btn:hover { background:#eee; }
+    .tb-btn.primary {
+      background:#e8f0fe; border-color:#aac; font-weight:500; padding:5px 11px;
+    }
+    .tb-btn.primary.active {
+      background:#1a73e8; color:#fff; border-color:#1a73e8; font-weight:bold;
+    }
+    .tb-btn.warning {
+      background:#fff3e0; border-color:#f5a623;
+    }
+
+    /* ========== 메인 컨테이너 ========== */
+    #main-container { display:flex; flex:1 1 auto; overflow:hidden; }
+    #map-wrap { flex:1 1 auto; overflow:hidden; position:relative; }
+    #map { width:100%; height:100%; display:block; }
+
+    /* ========== 사이드 패널 공통 ========== */
+    .side-panel {
+      width:0; min-width:0;
+      background:#fff; border-left:none;
+      display:flex; flex-direction:column; overflow:hidden;
+      transition: width .25s ease, min-width .25s ease;
+      font-size:13px; flex-shrink:0;
+    }
+    .side-panel.open {
+      width:230px; min-width:230px;
+      border-left:1px solid #ddd;
+    }
+    .panel-header {
+      padding:9px 12px 6px;
+      font-weight:bold; font-size:13px;
+      border-bottom:1px solid #eee;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-shrink:0; background:#f8f8f8;
+    }
+    .panel-header .ph-right { display:flex; gap:6px; align-items:center; }
+    .panel-header button {
+      font-size:11px; padding:2px 8px;
+      border:1px solid #bbb; border-radius:4px;
+      background:#fff; cursor:pointer;
+    }
+    .panel-header button:hover { background:#f0f0f0; }
+    .panel-close {
+      border:none !important; background:none !important;
+      font-size:16px !important; color:#999; padding:0 2px !important;
+    }
+
+    /* 검색 바 */
+    #panel-search-wrap {
+      flex-shrink:0; display:flex; align-items:center;
+      border-bottom:1px solid #eee; background:#fafafa;
+    }
+    #panel-search {
+      flex:1; padding:6px 10px;
+      border:none; font-size:12px; outline:none; background:transparent;
+    }
+    #panel-search:focus { background:#fff; }
+    #btn-search-clear {
+      display:none;
+      padding:4px 10px; margin-right:4px;
+      font-size:11px; color:#1a73e8; cursor:pointer; white-space:nowrap;
+      border:1px solid #aac; border-radius:4px; background:#e8f0fe;
+    }
+    #btn-search-clear:hover { background:#c5d8fd; }
+
+    /* 선택 요약 */
+    .panel-summary {
+      flex-shrink:0; padding:5px 10px;
+      font-size:11px;
+      border-bottom:1px solid #eee; background:#f0f4ff;
+      min-height:22px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    /* 리스트 */
+    .panel-list { overflow-y:auto; flex:1 1 auto; }
+    .continent-label {
+      padding:5px 10px; background:#efefef;
+      font-size:11px; font-weight:bold; color:#555;
+      position:sticky; top:0; z-index:1; letter-spacing:.5px;
+      cursor:pointer; display:flex; justify-content:space-between;
+      align-items:center; user-select:none;
+    }
+    .city-row {
+      display:flex; align-items:center; gap:7px;
+      padding:5px 10px; cursor:pointer;
+      transition:background .1s; border-bottom:1px solid #f5f5f5;
+    }
+    .city-row:hover { background:#f0f4ff; }
+    .city-row input[type=checkbox] { cursor:pointer; flex-shrink:0; margin:0; }
+    .city-row .city-name { flex:1; font-size:13px; line-height:1.3; cursor:pointer; }
+    .city-row .city-name.checked { font-weight:bold; color:#1a73e8; }
+    .city-row .del-btn {
+      color:#ddd; font-size:12px; cursor:pointer;
+      padding:0 2px; line-height:1; flex-shrink:0;
+    }
+    .city-row .del-btn:hover { color:#e53935; }
+    .no-result { padding:20px; text-align:center; color:#bbb; font-size:12px; }
+    .pin-empty { padding:20px; text-align:center; color:#bbb; font-size:12px; line-height:1.8; }
+
+    /* ========== 툴팁 (통합) ========== */
+    .tooltip {
+      position:fixed; display:none;
+      padding:4px 8px; font-size:12px;
+      color:#fff; background:rgba(0,0,0,.8);
+      border-radius:4px; pointer-events:none;
+      z-index:9999; white-space:nowrap; will-change:transform;
+    }
+
+    /* ========== SVG 요소 ========== */
+    .country { cursor:pointer; stroke:#666; stroke-width:0.3px; }
+    .selected { stroke:#333; }
+    .labels {
+      font-size:10px; fill:#222; pointer-events:none;
+      paint-order: stroke fill;
+      stroke:#fff; stroke-width:2.5px; stroke-linejoin:round;
+    }
+    .equator-line { fill:none; stroke:red; stroke-width:0.3px; }
+    .grid-line { stroke:#ccc; stroke-width:0.5px; stroke-dasharray:2 2; fill:none; }
+
+    /* ========== 팔레트 ========== */
+    .palette-box {
+      width:20px; height:20px; border:1px solid #aaa; cursor:pointer;
+      transition:transform .15s, border-color .15s;
+    }
+    .palette-box:hover { transform:scale(1.2); border-color:#333; }
+
+    /* ========== 푸터 ========== */
+    #footer {
+      position:fixed; bottom:6px; right:10px;
+      font-size:9px; color:#999; z-index:999;
+    }
+    #footer a { color:inherit; text-decoration:none; }
+    #helpLink {
+      position:absolute; top:6px; left:10px;
+      font-size:9px; color:#999; z-index:999;
+    }
+    #helpLink a { color:inherit; text-decoration:none; }
+    #helpLink a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
-<header style="background: pink; color: #fff; padding: 10px; font-size: 18px; display: flex; justify-content: space-between; align-items: center; position: relative;">
-  <span>세계지도 색칠하기 🎗️🗺️🖌️🙂 v1.4 20250912</span>
-  <div id="iconLinks" style="display: flex; gap: 12px; align-items: center; position: relative;">
-    <a href="https://buymeacoffee.com/geotasoo" target="_blank" data-tip="커피보내기" style="color: #fff; font-size: 18px; text-decoration: none;">☕</a>
-    <a href="https://geotasoo.tistory.com/entry/%EC%84%B8%EA%B3%84%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank" data-tip="사용법보기/생각나누기" style="color: #fff; font-size: 18px; text-decoration: none;">🏃🏻‍➡️</a>
-    <a href="https://geotasoo.tistory.com/entry/%EC%9A%B0%EB%A6%AC%EB%82%98%EB%9D%BC-%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank" data-tip="우리나라 지도 색칠하기" style="color: #fff; font-size: 18px; text-decoration: none;">🐯</a>
-    <div id="linkTooltip" style="display:none; position:fixed; background:rgba(0,0,0,0.8); color:#fff; font-size:12px; padding:4px 6px; border-radius:4px; white-space:nowrap; pointer-events:none; z-index:9999;"></div>
+
+<header id="header">
+  <span class="title">세계지도 색칠하기 & 점찍기 🎗️🗺️🖌️🙂🍖 v2.1 20260421(어머! 지리데이!)</span>
+  <div id="iconLinks">
+    <a href="https://buymeacoffee.com/geotasoo" target="_blank" data-tip="커피보내기">☕</a>
+    <a href="https://geotasoo.tistory.com/entry/%EC%9A%B0%EB%A6%AC%EB%82%98%EB%9D%BC-%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank" data-tip="우리나라 지도 색칠하기">🐯</a>
   </div>
 </header>
 
-<script>
-  const iconLinks = document.querySelectorAll('#iconLinks a');
-  const tooltip = document.getElementById('linkTooltip');
+<div id="toolbar">
+  <label>색상: <input type="color" id="colorPicker" value="#FFD700"></label>
+  <div style="display:flex;gap:6px;">
+    <div class="palette-box" data-color="#222222" style="background:#222222;"></div>
+    <div class="palette-box" data-color="#555555" style="background:#555555;"></div>
+    <div class="palette-box" data-color="#888888" style="background:#888888;"></div>
+    <div class="palette-box" data-color="#BBBBBB" style="background:#BBBBBB;"></div>
+    <div class="palette-box" data-color="#DDDDDD" style="background:#DDDDDD;"></div>
+  </div>
+  <label>육지 색상:
+    <select id="baseColorSelect">
+      <option value="#ffffff">하얀색</option>
+      <option value="#eeeeee">옅은 회색</option>
+    </select>
+  </label>
+  <label>바다 색상:
+    <select id="oceanColorSelect">
+      <option value="#ffffff">하얀색</option>
+      <option value="#e0f0ff" selected>하늘색</option>
+    </select>
+  </label>
+  <label>선 굵기:
+    <input type="range" id="strokeWidth" min="0.1" max="1.0" step="0.1" value="0.3">
+    <span id="strokeValue">0.3px</span>
+  </label>
+  <label>도시 점 크기:
+    <input type="range" id="dotSize" min="2" max="14" step="1" value="5">
+    <span id="dotSizeValue">5px</span>
+  </label>
+  <label>점 색상: <input type="color" id="dotColor" value="#e53935"></label>
+  <label style="display:flex; align-items:center; gap:4px;">
+    <input type="checkbox" id="dotStroke" checked style="margin:0;">
+    <span>점 테두리</span>
+  </label>
 
-  iconLinks.forEach(link => {
-    link.addEventListener('pointerenter', (e) => {
-      tooltip.textContent = link.dataset.tip;
-      tooltip.style.display = 'block';
-    });
-    link.addEventListener('pointermove', (e) => {
-      // 커서 왼쪽 아래로 살짝 치우쳐 위치
-      tooltip.style.left = (e.clientX - tooltip.offsetWidth - 10) + 'px';
-      tooltip.style.top = (e.clientY + 20) + 'px';
-    });
-    link.addEventListener('pointerleave', () => {
-      tooltip.style.display = 'none';
-    });
-  });
-</script>
+  <button id="btn-dot-panel" class="tb-btn primary">📍 점찍기</button>
+  <button id="btn-lake-panel" class="tb-btn primary">💧 호수</button>
+  <button id="btn-manual-clear" class="tb-btn warning" style="display:none;">🗑️ 내가찍은 점 지우기</button>
 
+  <button id="toggleLabels"  class="tb-btn">🌚 나라이름</button>
+  <button id="toggleBorders" class="tb-btn">🌝 국경선</button>
+  <button id="toggleGrids"   class="tb-btn">🌚 위선경선</button>
+  <button id="toggleEquator" class="tb-btn">🌝 적도</button>
+  <button id="zoomIn"    class="tb-btn">＋</button>
+  <button id="zoomOut"   class="tb-btn">－</button>
+  <button id="resetZoom" class="tb-btn">초기화</button>
+  <button id="savePng"   class="tb-btn">PNG 저장</button>
+  <span id="zoomLevel">확대 레벨: 1.00</span>
+</div>
 
+<div id="tooltip" class="tooltip"></div>
+<div id="linkTooltip" class="tooltip"></div>
 
-  <div id="toolbar">
-    <label>색상: <input type="color" id="colorPicker" value="#FFD700"></label>
-    <div id="paletteButtons" style="display: flex; gap: 6px;">
-      <div class="palette-box" data-color="#222222" style="background:#222222;"></div>
-      <div class="palette-box" data-color="#555555" style="background:#555555;"></div>
-      <div class="palette-box" data-color="#888888" style="background:#888888;"></div>
-      <div class="palette-box" data-color="#BBBBBB" style="background:#BBBBBB;"></div>
-      <div class="palette-box" data-color="#DDDDDD" style="background:#DDDDDD;"></div>
+<div id="main-container">
+  <div id="map-wrap">
+    <div id="helpLink">
+      <div>PC 환경에서 사용을 권장합니다</div>
+      <a href="https://geotasoo.tistory.com/entry/%EC%84%B8%EA%B3%84%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank">사용법보기/생각나누기</a>
     </div>
-    <label>육지 색상:
-      <select id="baseColorSelect">
-        <option value="#ffffff">하얀색</option>
-        <option value="#eeeeee">옅은 회색</option>
-      </select>
-    </label>
-    <label>바다 색상:
-      <select id="oceanColorSelect">
-        <option value="#ffffff">하얀색</option>
-        <option value="#e0f0ff" selected>하늘색</option>
-      </select>
-    </label>
-    <label>선 굵기:
-      <!-- max=1.0 유지 -->
-      <input type="range" id="strokeWidth" min="0.1" max="1.0" step="0.1" value="0.3">
-      <span id="strokeValue">0.3px</span>
-    </label>
-    <button id="toggleLabels">나라이름 보이기/숨기기</button>
-    <button id="toggleGrids">위선경선 보이기/숨기기</button>
-    <button id="toggleEquator">적도선 보이기/숨기기</button>
-    <button id="zoomIn">＋</button>
-    <button id="zoomOut">－</button>
-    <button id="resetZoom">초기화</button>
-    <button id="savePng">PNG 저장</button>
-    <span id="zoomLevel">확대 레벨: 1.00</span>
+    <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
   </div>
 
-  <!-- ◆ 커스텀 툴팁 노드 -->
-  <div id="tooltip"></div>
+  <!-- 도시 선택 패널 -->
+  <div id="city-panel" class="side-panel">
+    <div class="panel-header">
+      <span>🏙️ 도시 목록</span>
+      <div class="ph-right">
+        <button id="btn-panel-deselect">전체 해제</button>
+        <button id="btn-panel-close" class="panel-close" title="닫기">✕</button>
+      </div>
+    </div>
+    <div id="panel-search-wrap">
+      <input type="text" id="panel-search" placeholder="🔍  도시 검색..." />
+      <span id="btn-search-clear">← 목록으로</span>
+    </div>
+    <div id="panel-selected-summary" class="panel-summary">선택된 도시 없음</div>
+    <div id="panel-list" class="panel-list"></div>
+  </div>
 
-  <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
+  <!-- 핀 패널 -->
+  <div id="pin-panel" class="side-panel">
+    <div class="panel-header">
+      <span>📍 내가 찍은 점</span>
+      <div class="ph-right">
+        <button id="btn-pin-deselect">전체 해제</button>
+        <button id="btn-pin-panel-close" class="panel-close" title="닫기">✕</button>
+      </div>
+    </div>
+    <div id="pin-selected-summary" class="panel-summary" style="color:#aaa;">찍은 점 없음</div>
+    <div id="pin-list" class="panel-list"></div>
+  </div>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
-  <script>
+  <!-- 호수 패널 -->
+  <div id="lake-panel" class="side-panel">
+    <div class="panel-header">
+      <span>💧 호수</span>
+      <div class="ph-right">
+        <button id="btn-lake-deselect">전체 해제</button>
+        <button id="btn-lake-default">기본값</button>
+        <button id="btn-lake-panel-close" class="panel-close" title="닫기">✕</button>
+      </div>
+    </div>
+    <div id="lake-selected-summary" class="panel-summary">표시 중: 0개</div>
+    <div id="lake-list" class="panel-list"></div>
+  </div>
+</div>
+
+<footer id="footer"><a href="https://geotasoo.tistory.com" target="_blank">@geotasoo</a></footer>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script>
+// ========== 주요 호수 카탈로그 (14개) ==========
+// 주요 호수는 이름 매칭으로 개별 식별 (툴팁에 한글명 표시)
+// 그 외 모든 호수는 '전체 호수' 토글로 한 번에 표시 (툴팁 없음)
+const MAJOR_LAKES = [
+  {en:"Lake Baikal",     ko:"바이칼호"},
+  {en:"Aral Sea",        ko:"아랄해"},
+  {en:"Dead Sea",        ko:"사해"},
+  {en:"Lake Superior",   ko:"슈피리어호"},
+  {en:"Lake Michigan",   ko:"미시간호"},
+  {en:"Lake Huron",      ko:"휴런호"},
+  {en:"Lake Erie",       ko:"이리호"},
+  {en:"Lake Ontario",    ko:"온타리오호"},
+  {en:"Great Salt Lake", ko:"그레이트솔트레이크"},
+  {en:"Lake Victoria",   ko:"빅토리아호"},
+  {en:"Lake Tanganyika", ko:"탕가니카호"},
+  {en:"Lake Malawi",     ko:"말라위호"},
+  {en:"Lake Chad",       ko:"차드호"},
+  {en:"Lake Titicaca",   ko:"티티카카호"},
+];
+
+// Natural Earth 데이터에서 이름이 다를 수 있는 경우를 위한 별칭
+const LAKE_NAME_ALIASES = {
+  "L. Superior": "Lake Superior",
+  "L. Michigan": "Lake Michigan",
+  "L. Huron": "Lake Huron",
+  "L. Erie": "Lake Erie",
+  "Erie": "Lake Erie",
+  "L. Ontario": "Lake Ontario",
+  "Ontario": "Lake Ontario",
+  "L. Victoria": "Lake Victoria",
+  "Tanganyika": "Lake Tanganyika",
+  "L. Tanganyika": "Lake Tanganyika",
+  "Malawi": "Lake Malawi",
+  "L. Malawi": "Lake Malawi",
+  "Lake Nyasa": "Lake Malawi",
+  "L. Nyasa": "Lake Malawi",
+  "Chad": "Lake Chad",
+  "L. Chad": "Lake Chad",
+  "Titicaca": "Lake Titicaca",
+  "L. Titicaca": "Lake Titicaca",
+  "Lago Titicaca": "Lake Titicaca",
+  "Baikal": "Lake Baikal",
+  "L. Baikal": "Lake Baikal",
+  "Great Salt L.": "Great Salt Lake",
+  "Gt. Salt L.": "Great Salt Lake",
+};
+
+const MAJOR_LAKE_BY_EN = new Map(MAJOR_LAKES.map(l => [l.en, l]));
+
+// ========== 도시 데이터 ==========
+const CONTINENT_ORDER = ["아시아","유럽","북아메리카","남아메리카","아프리카","오세아니아"];
+
+let CITIES = [
+  {name:"가오슝",continent:"아시아",lat:22.6273,lng:120.3014},
+  {name:"광저우",continent:"아시아",lat:23.1291,lng:113.2644},
+  {name:"나고야",continent:"아시아",lat:35.1815,lng:136.9066},
+  {name:"뉴델리",continent:"아시아",lat:28.6139,lng:77.2090},
+  {name:"도쿄",continent:"아시아",lat:35.6762,lng:139.6503},
+  {name:"두바이",continent:"아시아",lat:25.2048,lng:55.2708},
+  {name:"마닐라",continent:"아시아",lat:14.5995,lng:120.9842},
+  {name:"방콕",continent:"아시아",lat:13.7563,lng:100.5018},
+  {name:"베이징",continent:"아시아",lat:39.9042,lng:116.4074},
+  {name:"부산",continent:"아시아",lat:35.1796,lng:129.0756},
+  {name:"상하이",continent:"아시아",lat:31.2304,lng:121.4737},
+  {name:"서울",continent:"아시아",lat:37.5665,lng:126.9780},
+  {name:"싱가포르",continent:"아시아",lat:1.3521,lng:103.8198},
+  {name:"양곤",continent:"아시아",lat:16.8661,lng:96.1951},
+  {name:"오사카",continent:"아시아",lat:34.6937,lng:135.5023},
+  {name:"이스탄불",continent:"아시아",lat:41.0082,lng:28.9784},
+  {name:"자카르타",continent:"아시아",lat:-6.2088,lng:106.8456},
+  {name:"카라치",continent:"아시아",lat:24.8607,lng:67.0011},
+  {name:"카트만두",continent:"아시아",lat:27.7172,lng:85.3240},
+  {name:"쿠알라룸푸르",continent:"아시아",lat:3.1390,lng:101.6869},
+  {name:"타이베이",continent:"아시아",lat:25.0330,lng:121.5654},
+  {name:"테헤란",continent:"아시아",lat:35.6892,lng:51.3890},
+  {name:"하노이",continent:"아시아",lat:21.0285,lng:105.8542},
+  {name:"홍콩",continent:"아시아",lat:22.3193,lng:114.1694},
+  {name:"그라나다",continent:"유럽",lat:37.1773,lng:-3.5986},
+  {name:"로마",continent:"유럽",lat:41.9028,lng:12.4964},
+  {name:"런던",continent:"유럽",lat:51.5074,lng:-0.1278},
+  {name:"리스본",continent:"유럽",lat:38.7169,lng:-9.1395},
+  {name:"마드리드",continent:"유럽",lat:40.4168,lng:-3.7038},
+  {name:"마르세유",continent:"유럽",lat:43.2965,lng:5.3698},
+  {name:"모스크바",continent:"유럽",lat:55.7558,lng:37.6173},
+  {name:"뮌헨",continent:"유럽",lat:48.1351,lng:11.5820},
+  {name:"바르셀로나",continent:"유럽",lat:41.3851,lng:2.1734},
+  {name:"바르샤바",continent:"유럽",lat:52.2297,lng:21.0122},
+  {name:"베를린",continent:"유럽",lat:52.5200,lng:13.4050},
+  {name:"베오그라드",continent:"유럽",lat:44.8176,lng:20.4569},
+  {name:"브뤼셀",continent:"유럽",lat:50.8503,lng:4.3517},
+  {name:"빈",continent:"유럽",lat:48.2082,lng:16.3738},
+  {name:"아테네",continent:"유럽",lat:37.9838,lng:23.7275},
+  {name:"암스테르담",continent:"유럽",lat:52.3676,lng:4.9041},
+  {name:"코펜하겐",continent:"유럽",lat:55.6761,lng:12.5683},
+  {name:"파리",continent:"유럽",lat:48.8566,lng:2.3522},
+  {name:"프라하",continent:"유럽",lat:50.0755,lng:14.4378},
+  {name:"헬싱키",continent:"유럽",lat:60.1699,lng:24.9384},
+  {name:"과달라하라",continent:"북아메리카",lat:20.6597,lng:-103.3496},
+  {name:"뉴욕",continent:"북아메리카",lat:40.7128,lng:-74.0060},
+  {name:"댈러스",continent:"북아메리카",lat:32.7767,lng:-96.7970},
+  {name:"로스앤젤레스",continent:"북아메리카",lat:34.0522,lng:-118.2437},
+  {name:"마이애미",continent:"북아메리카",lat:25.7617,lng:-80.1918},
+  {name:"멕시코시티",continent:"북아메리카",lat:19.4326,lng:-99.1332},
+  {name:"몬트리올",continent:"북아메리카",lat:45.5017,lng:-73.5673},
+  {name:"밴쿠버",continent:"북아메리카",lat:49.2827,lng:-123.1207},
+  {name:"보스턴",continent:"북아메리카",lat:42.3601,lng:-71.0589},
+  {name:"샌프란시스코",continent:"북아메리카",lat:37.7749,lng:-122.4194},
+  {name:"시카고",continent:"북아메리카",lat:41.8781,lng:-87.6298},
+  {name:"시애틀",continent:"북아메리카",lat:47.6062,lng:-122.3321},
+  {name:"워싱턴 D.C.",continent:"북아메리카",lat:38.9072,lng:-77.0369},
+  {name:"토론토",continent:"북아메리카",lat:43.6532,lng:-79.3832},
+  {name:"하바나",continent:"북아메리카",lat:23.1136,lng:-82.3666},
+  {name:"리마",continent:"남아메리카",lat:-12.0464,lng:-77.0428},
+  {name:"마나우스",continent:"남아메리카",lat:-3.1190,lng:-60.0217},
+  {name:"메데진",continent:"남아메리카",lat:6.2442,lng:-75.5812},
+  {name:"몬테비데오",continent:"남아메리카",lat:-34.9011,lng:-56.1645},
+  {name:"보고타",continent:"남아메리카",lat:4.7110,lng:-74.0721},
+  {name:"부에노스아이레스",continent:"남아메리카",lat:-34.6037,lng:-58.3816},
+  {name:"산티아고",continent:"남아메리카",lat:-33.4489,lng:-70.6693},
+  {name:"상파울루",continent:"남아메리카",lat:-23.5505,lng:-46.6333},
+  {name:"카라카스",continent:"남아메리카",lat:10.4806,lng:-66.9036},
+  {name:"키토",continent:"남아메리카",lat:-0.1807,lng:-78.4678},
+  {name:"나이로비",continent:"아프리카",lat:-1.2921,lng:36.8219},
+  {name:"다르에스살람",continent:"아프리카",lat:-6.7924,lng:39.2083},
+  {name:"라고스",continent:"아프리카",lat:6.5244,lng:3.3792},
+  {name:"루안다",continent:"아프리카",lat:-8.8368,lng:13.2343},
+  {name:"알제",continent:"아프리카",lat:36.7372,lng:3.0865},
+  {name:"아디스아바바",continent:"아프리카",lat:9.0320,lng:38.7469},
+  {name:"아비장",continent:"아프리카",lat:5.3600,lng:-4.0083},
+  {name:"요하네스버그",continent:"아프리카",lat:-26.2041,lng:28.0473},
+  {name:"카이로",continent:"아프리카",lat:30.0444,lng:31.2357},
+  {name:"카사블랑카",continent:"아프리카",lat:33.5731,lng:-7.5898},
+  {name:"케이프타운",continent:"아프리카",lat:-33.9249,lng:18.4241},
+  {name:"킨샤사",continent:"아프리카",lat:-4.4419,lng:15.2663},
+  {name:"튀니스",continent:"아프리카",lat:36.8188,lng:10.1658},
+  {name:"멜버른",continent:"오세아니아",lat:-37.8136,lng:144.9631},
+  {name:"브리즈번",continent:"오세아니아",lat:-27.4698,lng:153.0251},
+  {name:"시드니",continent:"오세아니아",lat:-33.8688,lng:151.2093},
+  {name:"오클랜드",continent:"오세아니아",lat:-36.8485,lng:174.7633},
+  {name:"퍼스",continent:"오세아니아",lat:-31.9505,lng:115.8605},
+  {name:"호바트",continent:"오세아니아",lat:-42.8821,lng:147.3272},
+];
+
+// ========== 메인 앱 (단일 IIFE) ==========
 (async function () {
-  const svg = d3.select("#map");
+  // --- DOM 캐싱 (반복 조회 제거) ---
+  const $ = id => document.getElementById(id);
+  const el = {
+    svg: $('map'),
+    toolbar: $('toolbar'),
+    tooltip: d3.select('#tooltip'),
+    linkTooltip: $('linkTooltip'),
+    colorPicker: $('colorPicker'),
+    baseColor: $('baseColorSelect'),
+    oceanColor: $('oceanColorSelect'),
+    strokeWidth: $('strokeWidth'),
+    strokeValue: $('strokeValue'),
+    dotSize: $('dotSize'),
+    dotSizeValue: $('dotSizeValue'),
+    dotColor: $('dotColor'),
+    dotStroke: $('dotStroke'),
+    zoomLevel: $('zoomLevel'),
+    cityPanel: $('city-panel'),
+    pinPanel: $('pin-panel'),
+    panelSearch: $('panel-search'),
+    panelSearchClear: $('btn-search-clear'),
+    panelList: $('panel-list'),
+    panelSummary: $('panel-selected-summary'),
+    pinList: $('pin-list'),
+    pinSummary: $('pin-selected-summary'),
+    btnDotPanel: $('btn-dot-panel'),
+    btnManualClear: $('btn-manual-clear'),
+  };
+
+  // --- 헤더 아이콘 툴팁 (통합 .tooltip 스타일 재사용) ---
+  document.querySelectorAll('#iconLinks a').forEach(link => {
+    link.addEventListener('pointerenter', () => {
+      el.linkTooltip.textContent = link.dataset.tip;
+      el.linkTooltip.style.display = 'block';
+    });
+    link.addEventListener('pointermove', e => {
+      el.linkTooltip.style.left = (e.clientX - el.linkTooltip.offsetWidth - 10) + 'px';
+      el.linkTooltip.style.top  = (e.clientY + 20) + 'px';
+    });
+    link.addEventListener('pointerleave', () => { el.linkTooltip.style.display = 'none'; });
+  });
+
+  // --- 상태 ---
+  const selectedCities = new Set();
+  const collapsedContinents = new Set(CONTINENT_ORDER);
+  const countryColors = new Map();
+  let manualPins = [];
+  let pinCounter = 0;
+  let manualMode = false;
+  let panelsOpen = false;
+  let gridVisible = false, labelsVisible = false, equatorVisible = true, bordersVisible = true;
+
+  // --- SVG 초기화 ---
+  const svg = d3.select(el.svg);
   const vw = window.innerWidth;
-  const vh = window.innerHeight - document.getElementById("toolbar").offsetHeight;
+  const vh = el.svg.parentElement.clientHeight || (window.innerHeight - el.toolbar.offsetHeight - 40);
   svg.attr("viewBox", `0 0 ${vw} ${vh}`);
 
   const background = svg.insert("rect", ":first-child")
-    .attr("x", -vw)
-    .attr("y", -vh)
-    .attr("width", vw * 3)
-    .attr("height", vh * 3)
-    .attr("fill", document.getElementById("oceanColorSelect").value);
+    .attr("x", -vw).attr("y", -vh)
+    .attr("width", vw * 3).attr("height", vh * 3)
+    .attr("fill", el.oceanColor.value);
 
   const projection = d3.geoMercator()
     .center([128, 36])
@@ -153,247 +509,804 @@
     .translate([vw / 2, vh / 2]);
   const path = d3.geoPath().projection(projection);
 
-  const mapGroup1 = svg.append("g").attr("class", "map1");
-  const mapGroup2 = svg.append("g").attr("class", "map2").attr("transform", `translate(${vw},0)`);
-  const labelsGroup1 = svg.append("g").attr("class", "labels1");
-  const labelsGroup2 = svg.append("g").attr("class", "labels2");
-  const gridGroup1 = svg.append("g").attr("class", "grids1");
-  const gridGroup2 = svg.append("g").attr("class", "grids2");
-  const equatorGroup1 = svg.append("g").attr("class", "equator1");
-  const equatorGroup2 = svg.append("g").attr("class", "equator2");
-  let gridVisible = false;
-  let labelsVisible = false;
-  let equatorVisible = true;
+  // --- SVG 그룹 ---
+  const mapGroup1     = svg.append("g").attr("class","map1");
+  const mapGroup2     = svg.append("g").attr("class","map2").attr("transform",`translate(${vw},0)`);
+  const lakeGroup1    = svg.append("g").attr("class","lakes1");
+  const lakeGroup2    = svg.append("g").attr("class","lakes2").attr("transform",`translate(${vw},0)`);
+  const otherLakeGroup1 = svg.append("g").attr("class","other-lakes1");
+  const otherLakeGroup2 = svg.append("g").attr("class","other-lakes2").attr("transform",`translate(${vw},0)`);
+  const labelsGroup1  = svg.append("g").attr("class","labels1");
+  const labelsGroup2  = svg.append("g").attr("class","labels2");
+  const gridGroup1    = svg.append("g").attr("class","grids1");
+  const gridGroup2    = svg.append("g").attr("class","grids2");
+  const equatorGroup1 = svg.append("g").attr("class","equator1");
+  const equatorGroup2 = svg.append("g").attr("class","equator2");
+  const cityGroup1    = svg.append("g").attr("class","cities1");
+  const cityGroup2    = svg.append("g").attr("class","cities2");
+  const pinGroup1     = svg.append("g").attr("class","pins1");
+  const pinGroup2     = svg.append("g").attr("class","pins2").attr("transform",`translate(${vw},0)`);
 
+  // --- 격자 / 적도 ---
   const graticule = d3.geoGraticule().step([30, 30]);
-  gridGroup1.append("path").datum(graticule()).attr("class", "grid-line").attr("d", path);
-  gridGroup1.style("display", "none");
-  gridGroup2.append("path").datum(graticule()).attr("class", "grid-line").attr("d", path).attr("transform", `translate(${vw},0)`);
-  gridGroup2.style("display", "none");
+  gridGroup1.append("path").datum(graticule()).attr("class","grid-line").attr("d",path);
+  gridGroup2.append("path").datum(graticule()).attr("class","grid-line").attr("d",path)
+    .attr("transform",`translate(${vw},0)`);
+  gridGroup1.style("display","none");
+  gridGroup2.style("display","none");
 
-  const equator = { type: "LineString", coordinates: d3.range(-180, 181, 1).map(lon => [lon, 0]) };
-  equatorGroup1.append("path").datum(equator).attr("class", "equator-line").attr("d", path);
-  equatorGroup2.append("path").datum(equator).attr("class", "equator-line").attr("d", path).attr("transform", `translate(${vw},0)`);
+  const equator = {type:"LineString", coordinates:d3.range(-180,181,1).map(lon => [lon, 0])};
+  equatorGroup1.append("path").datum(equator).attr("class","equator-line").attr("d",path);
+  equatorGroup2.append("path").datum(equator).attr("class","equator-line").attr("d",path).attr("transform",`translate(${vw},0)`);
 
+  // --- 팔레트 박스 ---
   document.querySelectorAll('.palette-box').forEach(box => {
-    box.addEventListener('click', () => {
-      const color = box.getAttribute('data-color');
-      document.getElementById('colorPicker').value = color;
-    });
+    box.addEventListener('click', () => { el.colorPicker.value = box.getAttribute('data-color'); });
   });
 
-  const world = await d3.json("https://unpkg.com/world-atlas@2/countries-50m.json");
+  // --- 월드 데이터 로드 (국가 + 호수 병렬 로드) ---
+  const [world, lakesData] = await Promise.all([
+    d3.json("https://unpkg.com/world-atlas@2/countries-50m.json"),
+    d3.json("https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_lakes.geojson").catch(() => null)
+  ]);
   const features = topojson.feature(world, world.objects.countries).features;
-  const countryColors = new Map();
+  const landMesh   = topojson.mesh(world, world.objects.countries, (a,b) => a===b);
+  const borderMesh = topojson.mesh(world, world.objects.countries, (a,b) => a!==b);
 
-  const tooltip = d3.select('#tooltip');
-
-  // 국가 path 생성
+  // --- 국가 path 렌더 ---
   [mapGroup1, mapGroup2].forEach(group => {
-    const countries = group.selectAll("path.country")
-      .data(features)
-      .enter().append("path")
-      .attr("class", "country")
-      .attr("d", path)
-      .attr("fill", "#ffffff")
-      .style("stroke-width", "0.3px")
-      .on("click", (event, d) => {
+    group.selectAll("path.country").data(features).enter().append("path")
+      .attr("class","country").attr("d",path).attr("fill","#ffffff")
+      .style("stroke","#666").style("stroke-width","0.3px")
+      .on("click",(event,d) => {
+        if (manualMode) return;
         const id = d.id;
         if (countryColors.has(id)) countryColors.delete(id);
-        else countryColors.set(id, document.getElementById("colorPicker").value);
+        else countryColors.set(id, el.colorPicker.value);
         updateColors();
       })
-      // ◆ 즉각 반응 툴팁: 기본 title 제거, pointer 이벤트로 교체
-      .on("pointerenter", (event, d) => {
-        tooltip.style("display", "block").text(d.properties.name);
-      })
-      .on("pointermove", (event) => {
-        // 커서 약간 우하단에 위치
-        const x = event.clientX + 26;
-        const y = event.clientY + 28;
-        tooltip.style("transform", `translate(${x}px, ${y}px)`);
-      })
-      .on("pointerleave", () => {
-        tooltip.style("display", "none");
-      });
+      .on("pointerenter",(event,d) => { el.tooltip.style("display","block").text(d.properties.name); })
+      .on("pointermove", event => { el.tooltip.style("transform",`translate(${event.clientX+26}px,${event.clientY+28}px)`); })
+      .on("pointerleave", () => { el.tooltip.style("display","none"); });
 
-    // ❌ 지연 유발하는 기본 브라우저 title 툴팁 제거 (추가 생성하지 않음)
-    // countries.append("title").text(d => d.properties.name);  // 제거
+    group.append("path").datum(landMesh).attr("class","land-outline").attr("d",path)
+      .attr("fill","none").attr("stroke","#666").attr("stroke-width","0.3px").attr("pointer-events","none");
+    group.append("path").datum(borderMesh).attr("class","border-mesh").attr("d",path)
+      .attr("fill","none").attr("stroke","#666").attr("stroke-width","0.3px").attr("pointer-events","none");
   });
 
-  document.getElementById("oceanColorSelect").addEventListener("change", () => {
-    background.attr("fill", document.getElementById("oceanColorSelect").value);
-  });
+  // --- 호수 데이터 분리 ---
+  // majorLakeFeatures: 주요 15개 (이름 매칭) — 개별 체크박스
+  // otherLakeFeatures: 나머지 전체 — 전체 토글 하나로만 제어 (툴팁 없음)
+  const majorLakeFeatures = new Map();   // 한글명 → GeoJSON feature
+  const otherLakeFeatures = [];
+  if (lakesData && lakesData.features) {
+    lakesData.features.forEach(f => {
+      let en = f.properties?.name || f.properties?.name_en;
+      if (!en) return;
+      
+      // 별칭 확인
+      if (LAKE_NAME_ALIASES[en]) {
+        en = LAKE_NAME_ALIASES[en];
+      }
+      
+      if (MAJOR_LAKE_BY_EN.has(en)) {
+        majorLakeFeatures.set(MAJOR_LAKE_BY_EN.get(en).ko, f);
+      } else {
+        otherLakeFeatures.push(f);
+      }
+    });
+  }
 
+  // 선택 상태: 주요 호수 개별 on/off (기본: 전부 켜짐), 전체 호수 토글 (기본: 꺼짐)
+  const selectedMajorLakes = new Set(
+    MAJOR_LAKES.filter(l => majorLakeFeatures.has(l.ko)).map(l => l.ko)
+  );
+  let showAllLakes = false;
+
+  function renderMajorLakes() {
+    [lakeGroup1, lakeGroup2].forEach(group => {
+      group.selectAll("path.lake").remove();
+      const visibleFeatures = [...selectedMajorLakes]
+        .map(ko => majorLakeFeatures.get(ko))
+        .filter(Boolean);
+      group.selectAll("path.lake").data(visibleFeatures).enter().append("path")
+        .attr("class","lake").attr("d",path)
+        .attr("fill", el.oceanColor.value)
+        .attr("stroke","#888").attr("stroke-width", el.strokeWidth.value + "px")
+        .attr("pointer-events","all")
+        .on("pointerenter",(event,d) => {
+          let en = d.properties?.name || d.properties?.name_en;
+          if (LAKE_NAME_ALIASES[en]) en = LAKE_NAME_ALIASES[en];
+          const ko = MAJOR_LAKE_BY_EN.get(en)?.ko || en;
+          el.tooltip.style("display","block").text(ko);
+        })
+        .on("pointermove", event => { el.tooltip.style("transform",`translate(${event.clientX+26}px,${event.clientY+28}px)`); })
+        .on("pointerleave", () => { el.tooltip.style("display","none"); });
+    });
+  }
+
+  function renderOtherLakes() {
+    [otherLakeGroup1, otherLakeGroup2].forEach(group => {
+      group.selectAll("path.other-lake").remove();
+      if (!showAllLakes) return;
+      group.selectAll("path.other-lake").data(otherLakeFeatures).enter().append("path")
+        .attr("class","other-lake lake").attr("d",path)
+        .attr("fill", el.oceanColor.value)
+        .attr("stroke","#888").attr("stroke-width", el.strokeWidth.value + "px")
+        .attr("pointer-events","none");
+    });
+  }
+
+  renderMajorLakes();
+  renderOtherLakes();
+
+  // --- 중심점 캐시 ---
+  const centroids = new Map(features.map(f => [f.id, projection(d3.geoCentroid(f))]));
+
+  // ========== 렌더 함수 ==========
   function updateColors() {
-    const base = document.getElementById("baseColorSelect").value;
-    [mapGroup1, mapGroup2].forEach(group => {
-      group.selectAll("path.country")
+    const base = el.baseColor.value;
+    [mapGroup1, mapGroup2].forEach(g => {
+      g.selectAll("path.country")
         .attr("fill", d => countryColors.get(d.id) || base)
         .classed("selected", d => countryColors.has(d.id));
     });
   }
 
-  function updateLabels() {
-    labelsGroup1.selectAll("text").remove();
-    labelsGroup2.selectAll("text").remove();
-    labelsGroup1.selectAll("text")
-      .data(features)
-      .enter().append("text")
-      .attr("class", "labels")
-      .attr("x", d => projection(d3.geoCentroid(d))[0])
-      .attr("y", d => projection(d3.geoCentroid(d))[1])
-      .text(d => d.properties.name)
-      .style("display", labelsVisible ? "block" : "none");
-    labelsGroup2.selectAll("text")
-      .data(features)
-      .enter().append("text")
-      .attr("class", "labels")
-      .attr("x", d => projection(d3.geoCentroid(d))[0] + vw)
-      .attr("y", d => projection(d3.geoCentroid(d))[1])
-      .text(d => d.properties.name)
-      .style("display", labelsVisible ? "block" : "none");
+  function updateBorders() {
+    svg.selectAll(".border-mesh").style("display", bordersVisible ? "block" : "none");
+    svg.selectAll("path.country").style("stroke", bordersVisible ? "#666" : "none");
   }
 
-  document.getElementById("toggleLabels").onclick = () => { labelsVisible = !labelsVisible; updateLabels(); };
-  document.getElementById("toggleGrids").onclick = () => {
-    gridVisible = !gridVisible;
-    gridGroup1.style("display", gridVisible ? "block" : "none");
-    gridGroup2.style("display", gridVisible ? "block" : "none");
-  };
-  document.getElementById("toggleEquator").onclick = () => {
-    equatorVisible = !equatorVisible;
-    equatorGroup1.style("display", equatorVisible ? "block" : "none");
-    equatorGroup2.style("display", equatorVisible ? "block" : "none");
-  };
+  function updateLabels() {
+    [labelsGroup1, labelsGroup2].forEach(g => {
+      g.selectAll("text").remove();
+      g.selectAll("text").data(features).enter().append("text")
+        .attr("class","labels")
+        .attr("x", d => centroids.get(d.id)?.[0] ?? 0)
+        .attr("y", d => centroids.get(d.id)?.[1] ?? 0)
+        .text(d => d.properties.name)
+        .style("display", labelsVisible ? "block" : "none");
+    });
+  }
 
-  const zoomBehavior = d3.zoom()
-    .scaleExtent([0.5, 8])
+  function renderCityDots() {
+    const r = parseFloat(el.dotSize.value);
+    const color = el.dotColor.value;
+    const useStroke = el.dotStroke.checked;
+    const selected = CITIES.filter(c => selectedCities.has(c.name));
+    [cityGroup1, cityGroup2].forEach(g => {
+      g.selectAll("circle.city-dot").remove();
+      g.selectAll("circle.city-dot").data(selected).enter().append("circle")
+        .attr("class","city-dot")
+        .attr("cx", d => projection([d.lng, d.lat])[0])
+        .attr("cy", d => projection([d.lng, d.lat])[1])
+        .attr("r", r)
+        .attr("fill", color)
+        .attr("stroke", useStroke ? "#fff" : "none")
+        .attr("stroke-width", useStroke ? Math.max(0.5, r * 0.2) : 0)
+        .attr("pointer-events","all")
+        .on("pointerenter",(event,d) => { el.tooltip.style("display","block").text(d.name); })
+        .on("pointermove", event => { el.tooltip.style("transform",`translate(${event.clientX+26}px,${event.clientY+28}px)`); })
+        .on("pointerleave", () => { el.tooltip.style("display","none"); });
+    });
+  }
+
+  function renderPins() {
+    const r = parseFloat(el.dotSize.value);
+    const color = el.dotColor.value;
+    const useStroke = el.dotStroke.checked;
+    const visible = manualPins.filter(p => p.visible);
+    [pinGroup1, pinGroup2].forEach(g => {
+      g.selectAll("circle.pin-dot").remove();
+      visible.forEach(pin => {
+        const [cx, cy] = projection([pin.lng, pin.lat]);
+        g.append('circle')
+          .attr('class', 'pin-dot')
+          .attr('cx', cx).attr('cy', cy)
+          .attr('r', r)
+          .attr('fill', color)
+          .attr('stroke', useStroke ? '#fff' : 'none')
+          .attr('stroke-width', useStroke ? Math.max(0.5, r * 0.2) : 0)
+          .attr('pointer-events','all')
+          .on('pointerenter', () => { el.tooltip.style('display','block').text(`📍 #${pin.num}`); })
+          .on('pointermove', ev => { el.tooltip.style('transform',`translate(${ev.clientX+26}px,${ev.clientY+28}px)`); })
+          .on('pointerleave', () => { el.tooltip.style('display','none'); });
+      });
+    });
+  }
+
+  // ========== 사이드 패널 ==========
+  function updateSummary() {
+    if (selectedCities.size === 0) {
+      el.panelSummary.textContent = '선택된 도시 없음';
+      el.panelSummary.style.color = '#aaa';
+    } else {
+      const names = [...selectedCities].join(', ');
+      el.panelSummary.textContent = `✔ ${selectedCities.size}개 선택: ${names}`;
+      el.panelSummary.style.color = '#1a73e8';
+    }
+  }
+
+  function buildPanelList(filter = '') {
+    el.panelList.innerHTML = '';
+    const fl = filter.trim().toLowerCase();
+    const isSearch = fl.length > 0;
+
+    const grouped = {};
+    CONTINENT_ORDER.forEach(c => { grouped[c] = []; });
+    CITIES.forEach(city => {
+      if (!grouped[city.continent]) grouped[city.continent] = [];
+      if (!fl || city.name.toLowerCase().includes(fl)) grouped[city.continent].push(city);
+    });
+
+    let anyResult = false;
+    CONTINENT_ORDER.forEach(continent => {
+      const cities = grouped[continent];
+      if (!cities || !cities.length) return;
+      anyResult = true;
+      const sorted = [...cities].sort((a,b) => a.name.localeCompare(b.name, 'ko'));
+      const isCollapsed = !isSearch && collapsedContinents.has(continent);
+      const selectedCount = sorted.filter(c => selectedCities.has(c.name)).length;
+
+      const lbl = document.createElement('div');
+      lbl.className = 'continent-label';
+
+      const lblLeft = document.createElement('span');
+      lblLeft.textContent = continent;
+
+      const lblRight = document.createElement('span');
+      lblRight.style.cssText = 'display:flex; align-items:center; gap:6px; font-size:11px;';
+      if (selectedCount > 0) {
+        const badge = document.createElement('span');
+        badge.dataset.badge = '1';
+        badge.textContent = `✔${selectedCount}`;
+        badge.style.cssText = 'color:#1a73e8; font-weight:bold;';
+        lblRight.appendChild(badge);
+      }
+      const arrow = document.createElement('span');
+      arrow.textContent = isCollapsed ? '▶' : '▼';
+      arrow.style.cssText = 'color:#999; font-size:10px;';
+      lblRight.appendChild(arrow);
+
+      lbl.appendChild(lblLeft);
+      lbl.appendChild(lblRight);
+
+      const cityWrap = document.createElement('div');
+      cityWrap.style.display = isCollapsed ? 'none' : 'block';
+
+      lbl.addEventListener('click', () => {
+        if (isSearch) return;
+        if (collapsedContinents.has(continent)) {
+          collapsedContinents.delete(continent);
+          cityWrap.style.display = 'block';
+          arrow.textContent = '▼';
+        } else {
+          collapsedContinents.add(continent);
+          cityWrap.style.display = 'none';
+          arrow.textContent = '▶';
+        }
+      });
+
+      el.panelList.appendChild(lbl);
+
+      sorted.forEach(city => {
+        const row = document.createElement('div');
+        row.className = 'city-row';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = selectedCities.has(city.name);
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'city-name' + (selectedCities.has(city.name) ? ' checked' : '');
+        nameEl.textContent = city.name;
+
+        const toggle = () => {
+          if (selectedCities.has(city.name)) {
+            selectedCities.delete(city.name);
+            cb.checked = false;
+            nameEl.classList.remove('checked');
+          } else {
+            selectedCities.add(city.name);
+            cb.checked = true;
+            nameEl.classList.add('checked');
+          }
+          // 대륙 배지 갱신
+          const cnt = sorted.filter(c => selectedCities.has(c.name)).length;
+          let b = lblRight.querySelector('span[data-badge]');
+          if (!b && cnt > 0) {
+            b = document.createElement('span');
+            b.dataset.badge = '1';
+            b.style.cssText = 'color:#1a73e8; font-weight:bold;';
+            lblRight.insertBefore(b, arrow);
+          }
+          if (b) {
+            if (cnt > 0) { b.textContent = `✔${cnt}`; b.style.display = ''; }
+            else { b.style.display = 'none'; }
+          }
+          updateSummary();
+          renderCityDots();
+        };
+        cb.addEventListener('change', toggle);
+        nameEl.addEventListener('click', toggle);
+
+        row.appendChild(cb);
+        row.appendChild(nameEl);
+        cityWrap.appendChild(row);
+      });
+
+      el.panelList.appendChild(cityWrap);
+    });
+
+    if (!anyResult) {
+      const msg = document.createElement('div');
+      msg.className = 'no-result';
+      msg.textContent = '검색 결과가 없습니다';
+      el.panelList.appendChild(msg);
+    }
+  }
+
+  // ========== 핀 패널 ==========
+  function buildPinList() {
+    el.pinList.innerHTML = '';
+    const visibleCount = manualPins.filter(p => p.visible).length;
+
+    if (manualPins.length === 0) {
+      const msg = document.createElement('div');
+      msg.className = 'pin-empty';
+      msg.innerHTML = '지도를 클릭해서<br>점을 찍어보세요 📍';
+      el.pinList.appendChild(msg);
+      el.pinSummary.textContent = '찍은 점 없음';
+      el.pinSummary.style.color = '#aaa';
+      return;
+    }
+
+    el.pinSummary.textContent = `✔ ${visibleCount}개 표시 중 (전체 ${manualPins.length}개)`;
+    el.pinSummary.style.color = '#1a73e8';
+
+    manualPins.forEach(pin => {
+      const row = document.createElement('div');
+      row.className = 'city-row';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = pin.visible;
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'city-name' + (pin.visible ? ' checked' : '');
+      nameEl.textContent = `#${pin.num}`;
+
+      cb.addEventListener('change', () => {
+        pin.visible = cb.checked;
+        nameEl.classList.toggle('checked', cb.checked);
+        buildPinList();
+        renderPins();
+      });
+      nameEl.addEventListener('click', () => { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); });
+
+      const delBtn = document.createElement('span');
+      delBtn.className = 'del-btn';
+      delBtn.textContent = '✕';
+      delBtn.title = '삭제';
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        manualPins = manualPins.filter(p => p.num !== pin.num);
+        buildPinList();
+        renderPins();
+      });
+
+      row.appendChild(cb);
+      row.appendChild(nameEl);
+      row.appendChild(delBtn);
+      el.pinList.appendChild(row);
+    });
+  }
+
+  // ========== 패널 열고 닫기 ==========
+  function openPanels() {
+    panelsOpen = true;
+    el.cityPanel.classList.add('open');
+    el.pinPanel.classList.add('open');
+    el.btnDotPanel.textContent = '✅ 점찍기 완료';
+    el.btnDotPanel.classList.add('active');
+    buildPanelList(el.panelSearch.value);
+    buildPinList();
+    enterManualMode();
+  }
+  function closePanels() {
+    panelsOpen = false;
+    el.cityPanel.classList.remove('open');
+    el.pinPanel.classList.remove('open');
+    el.btnDotPanel.textContent = '📍 점찍기';
+    el.btnDotPanel.classList.remove('active');
+    exitManualMode();
+  }
+
+  function enterManualMode() {
+    manualMode = true;
+    el.svg.style.cursor = 'crosshair';
+    el.svg.style.outline = '3px solid #1a73e8';
+  }
+  function exitManualMode() {
+    manualMode = false;
+    el.svg.style.cursor = '';
+    el.svg.style.outline = '';
+  }
+
+  // ========== 줌 ==========
+  const zoomBehavior = d3.zoom().scaleExtent([0.5, 8])
     .on("zoom", ({transform}) => {
       const {k, x, y} = transform;
+      const t2 = `translate(${vw*k+x},${y}) scale(${k})`;
       mapGroup1.attr("transform", transform);
-      mapGroup2.attr("transform", `translate(${vw * k + x},${y}) scale(${k})`);
+      mapGroup2.attr("transform", t2);
+      lakeGroup1.attr("transform", transform);
+      lakeGroup2.attr("transform", t2);
+      otherLakeGroup1.attr("transform", transform);
+      otherLakeGroup2.attr("transform", t2);
       labelsGroup1.attr("transform", transform);
-      labelsGroup2.attr("transform", transform);
+      labelsGroup2.attr("transform", t2);
       gridGroup1.attr("transform", transform);
       gridGroup2.attr("transform", transform);
       equatorGroup1.attr("transform", transform);
       equatorGroup2.attr("transform", transform);
-      document.getElementById("zoomLevel").innerText = `확대 레벨: ${k.toFixed(2)}`;
+      cityGroup1.attr("transform", transform);
+      cityGroup2.attr("transform", t2);
+      pinGroup1.attr("transform", transform);
+      pinGroup2.attr("transform", t2);
+      el.zoomLevel.innerText = `확대 레벨: ${k.toFixed(2)}`;
     });
-
   svg.call(zoomBehavior).on("dblclick.zoom", null);
 
-  document.getElementById("zoomIn").onclick = () => {
-    const t = d3.zoomTransform(svg.node());
-    svg.transition().call(zoomBehavior.scaleTo, Math.min(8, t.k + 0.1));
+  // ========== 이모지 토글 ==========
+  function setToggleEmoji(id, visible) {
+    const btn = $(id);
+    const label = btn.textContent.replace(/🌝|🌚/, '').trim();
+    btn.textContent = (visible ? '🌝 ' : '🌚 ') + label;
+  }
+
+  // ========== 지도 클릭 → 점 찍기 ==========
+  // 핵심 아이디어: 도시 점과 동일하게 경도/위도로 저장
+  //  → renderCityDots처럼 projection([lng,lat])으로 렌더하면 언제나 정확
+  svg.on('click', function(event) {
+    if (!manualMode) return;
+
+    // 1. 화면 좌표 → SVG viewBox 좌표
+    const pt = el.svg.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+    const svgP = pt.matrixTransform(el.svg.getScreenCTM().inverse());
+
+    // 2. 줌 역변환 → 줌 적용 전 viewBox 좌표
+    const t = d3.zoomTransform(el.svg);
+    let ux = (svgP.x - t.x) / t.k;
+    const uy = (svgP.y - t.y) / t.k;
+
+    // 3. 지도2 영역이면 지도1 좌표로 정규화
+    if (ux >= vw) ux -= vw;
+
+    // 4. 지도 좌표 → 경도/위도 (projection.invert)
+    const lngLat = projection.invert([ux, uy]);
+    if (!lngLat) return;
+
+    pinCounter++;
+    manualPins.push({ lng: lngLat[0], lat: lngLat[1], num: pinCounter, visible: true });
+    buildPinList();
+    renderPins();
+    event.stopPropagation();
+  });
+
+  // ========== 이벤트 바인딩 ==========
+  el.btnDotPanel.addEventListener('click', () => panelsOpen ? closePanels() : openPanels());
+  $('btn-panel-close').addEventListener('click', closePanels);
+  $('btn-pin-panel-close').addEventListener('click', closePanels);
+  $('btn-panel-deselect').addEventListener('click', () => {
+    selectedCities.clear();
+    updateSummary();
+    buildPanelList(el.panelSearch.value);
+    renderCityDots();
+  });
+  $('btn-pin-deselect').addEventListener('click', () => {
+    manualPins.forEach(p => p.visible = false);
+    buildPinList();
+    renderPins();
+  });
+  el.btnManualClear.addEventListener('click', () => {
+    if (!manualPins.length) return;
+    if (!confirm(`직접 찍은 점 ${manualPins.length}개를 모두 지울까요?`)) return;
+    manualPins = []; pinCounter = 0;
+    buildPinList(); renderPins();
+  });
+  el.panelSearch.addEventListener('input', e => {
+    el.panelSearchClear.style.display = e.target.value.length > 0 ? 'inline-block' : 'none';
+    buildPanelList(e.target.value);
+  });
+  el.panelSearchClear.addEventListener('click', () => {
+    el.panelSearch.value = '';
+    el.panelSearchClear.style.display = 'none';
+    buildPanelList('');
+    el.panelSearch.focus();
+  });
+
+  // 도시 점 크기/색상
+  el.dotSize.addEventListener('input', () => {
+    el.dotSizeValue.textContent = el.dotSize.value + 'px';
+    renderCityDots(); renderPins();
+  });
+  el.dotColor.addEventListener('input', () => { renderCityDots(); renderPins(); });
+  el.dotStroke.addEventListener('change', () => { renderCityDots(); renderPins(); });
+
+  // 바다 / 육지 / 선 굵기
+  el.oceanColor.addEventListener('change', () => {
+    background.attr("fill", el.oceanColor.value);
+    svg.selectAll("path.lake").attr("fill", el.oceanColor.value);
+  });
+  el.baseColor.addEventListener('change', updateColors);
+  el.strokeWidth.addEventListener('input', () => {
+    const w = el.strokeWidth.value;
+    el.strokeValue.textContent = w + 'px';
+    svg.selectAll("path.country,.equator-line,.grid-line,.land-outline,.border-mesh,.lake")
+      .style("stroke-width", w + 'px');
+  });
+
+  // 토글
+  $('toggleLabels').onclick  = () => { labelsVisible  = !labelsVisible;  updateLabels();  setToggleEmoji('toggleLabels',  labelsVisible); };
+  $('toggleBorders').onclick = () => { bordersVisible = !bordersVisible; updateBorders(); setToggleEmoji('toggleBorders', bordersVisible); };
+  $('toggleGrids').onclick   = () => {
+    gridVisible = !gridVisible;
+    gridGroup1.style("display", gridVisible ? "block" : "none");
+    gridGroup2.style("display", gridVisible ? "block" : "none");
+    setToggleEmoji('toggleGrids', gridVisible);
   };
-  document.getElementById("zoomOut").onclick = () => {
-    const t = d3.zoomTransform(svg.node());
-    svg.transition().call(zoomBehavior.scaleTo, Math.max(0.5, t.k - 0.1));
+  $('toggleEquator').onclick = () => {
+    equatorVisible = !equatorVisible;
+    equatorGroup1.style("display", equatorVisible ? "block" : "none");
+    equatorGroup2.style("display", equatorVisible ? "block" : "none");
+    setToggleEmoji('toggleEquator', equatorVisible);
   };
-  document.getElementById("resetZoom").onclick = () => {
+
+  // ========== 호수 패널 ==========
+  const lakePanel = $('lake-panel');
+  let lakePanelOpen = false;
+
+  function openLakePanel() {
+    lakePanelOpen = true;
+    lakePanel.classList.add('open');
+    $('btn-lake-panel').classList.add('active');
+    $('btn-lake-panel').textContent = '💧 호수 닫기';
+    buildLakeList();
+  }
+  function closeLakePanel() {
+    lakePanelOpen = false;
+    lakePanel.classList.remove('open');
+    $('btn-lake-panel').classList.remove('active');
+    $('btn-lake-panel').textContent = '💧 호수';
+  }
+  $('btn-lake-panel').addEventListener('click', () => lakePanelOpen ? closeLakePanel() : openLakePanel());
+  $('btn-lake-panel-close').addEventListener('click', closeLakePanel);
+
+  // 전체 해제: 주요호수 + 전체호수 둘 다 끔
+  $('btn-lake-deselect').addEventListener('click', () => {
+    selectedMajorLakes.clear();
+    showAllLakes = false;
+    buildLakeList();
+    renderMajorLakes();
+    renderOtherLakes();
+  });
+  // 기본값: 주요 호수 전부 켜기, 전체 호수 끄기
+  $('btn-lake-default').addEventListener('click', () => {
+    selectedMajorLakes.clear();
+    MAJOR_LAKES.forEach(l => { if (majorLakeFeatures.has(l.ko)) selectedMajorLakes.add(l.ko); });
+    showAllLakes = false;
+    buildLakeList();
+    renderMajorLakes();
+    renderOtherLakes();
+  });
+
+  function updateLakeSummary() {
+    const el2 = $('lake-selected-summary');
+    const majorCount = selectedMajorLakes.size;
+    const allLabel = showAllLakes ? ' + 전체 호수' : '';
+    if (majorCount === 0 && !showAllLakes) {
+      el2.textContent = '표시 중인 호수 없음';
+      el2.style.color = '#aaa';
+    } else {
+      el2.textContent = `✔ 주요 ${majorCount}개${allLabel}`;
+      el2.style.color = '#1a73e8';
+    }
+  }
+
+  function buildLakeList() {
+    const list = $('lake-list');
+    list.innerHTML = '';
+
+    // === 섹션 1: 주요 호수 헤더 ===
+    const header = document.createElement('div');
+    header.className = 'continent-label';
+    header.style.cursor = 'default';
+    const hLeft = document.createElement('span');
+    hLeft.innerHTML = '⭐ 주요 호수';
+    hLeft.style.color = '#1a73e8';
+    const hRight = document.createElement('span');
+    hRight.style.cssText = 'font-size:11px; color:#1a73e8; font-weight:bold;';
+    hRight.textContent = `✔${selectedMajorLakes.size}`;
+    header.appendChild(hLeft);
+    header.appendChild(hRight);
+    list.appendChild(header);
+
+    // 주요 호수 15개 — 카탈로그 순서대로 (지리적 의미가 있는 순서)
+    MAJOR_LAKES.forEach(lake => {
+      if (!majorLakeFeatures.has(lake.ko)) return;  // GeoJSON에 없는 건 스킵
+      const row = document.createElement('div');
+      row.className = 'city-row';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = selectedMajorLakes.has(lake.ko);
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'city-name' + (selectedMajorLakes.has(lake.ko) ? ' checked' : '');
+      nameEl.textContent = lake.ko;
+
+      const toggle = () => {
+        if (selectedMajorLakes.has(lake.ko)) {
+          selectedMajorLakes.delete(lake.ko);
+          cb.checked = false;
+          nameEl.classList.remove('checked');
+        } else {
+          selectedMajorLakes.add(lake.ko);
+          cb.checked = true;
+          nameEl.classList.add('checked');
+        }
+        hRight.textContent = `✔${selectedMajorLakes.size}`;
+        updateLakeSummary();
+        renderMajorLakes();
+      };
+      cb.addEventListener('change', toggle);
+      nameEl.addEventListener('click', toggle);
+
+      row.appendChild(cb);
+      row.appendChild(nameEl);
+      list.appendChild(row);
+    });
+
+    // === 섹션 2: 전체 호수 토글 ===
+    const spacer = document.createElement('div');
+    spacer.style.cssText = 'height:10px; background:#fafafa; border-top:1px solid #eee;';
+    list.appendChild(spacer);
+
+    const allHeader = document.createElement('div');
+    allHeader.className = 'continent-label';
+    allHeader.style.cursor = 'default';
+    allHeader.innerHTML = '<span>🌐 전체 호수</span>';
+    list.appendChild(allHeader);
+
+    const info = document.createElement('div');
+    info.style.cssText = 'padding:8px 12px; font-size:11px; color:#777; background:#fff; line-height:1.5;';
+    info.textContent = `전세계 호수를 한 번에 표시 (약 ${otherLakeFeatures.length + MAJOR_LAKES.length}개). 시각적 참고용이며 개별 선택은 불가합니다.`;
+    list.appendChild(info);
+
+    const toggleRow = document.createElement('div');
+    toggleRow.className = 'city-row';
+    const tcb = document.createElement('input');
+    tcb.type = 'checkbox';
+    tcb.checked = showAllLakes;
+    const tname = document.createElement('span');
+    tname.className = 'city-name' + (showAllLakes ? ' checked' : '');
+    tname.textContent = '전체 호수 표시';
+
+    const toggleAll = () => {
+      showAllLakes = !showAllLakes;
+      tcb.checked = showAllLakes;
+      tname.classList.toggle('checked', showAllLakes);
+      updateLakeSummary();
+      renderOtherLakes();
+    };
+    tcb.addEventListener('change', toggleAll);
+    tname.addEventListener('click', toggleAll);
+
+    toggleRow.appendChild(tcb);
+    toggleRow.appendChild(tname);
+    list.appendChild(toggleRow);
+
+    updateLakeSummary();
+  }
+
+  // 줌 버튼
+  $('zoomIn').onclick  = () => svg.transition().call(zoomBehavior.scaleTo, Math.min(8, d3.zoomTransform(el.svg).k + 0.1));
+  $('zoomOut').onclick = () => svg.transition().call(zoomBehavior.scaleTo, Math.max(0.5, d3.zoomTransform(el.svg).k - 0.1));
+
+  // 초기화
+  $('resetZoom').onclick = () => {
     const korea = features.find(f => f.properties.name === 'South Korea');
     if (korea) {
-      const [x, y] = projection(d3.geoCentroid(korea));
-      const scale = 1;
-      const translate = [vw / 2 - x * scale, vh / 2 - y * scale];
-      const transform = d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale);
-      svg.transition().duration(750).call(zoomBehavior.transform, transform);
+      const [cx,cy] = projection(d3.geoCentroid(korea));
+      svg.transition().duration(750).call(zoomBehavior.transform, d3.zoomIdentity.translate(vw/2-cx, vh/2-cy).scale(1));
     } else {
       svg.transition().call(zoomBehavior.transform, d3.zoomIdentity);
     }
-
     countryColors.clear();
-    document.getElementById("baseColorSelect").value = "#ffffff";
-    updateColors();
-
-    document.getElementById("colorPicker").value = "#FFD700";
-    document.getElementById("baseColorSelect").value = "#ffffff";
-    document.getElementById("oceanColorSelect").value = "#e0f0ff";
+    el.colorPicker.value = "#FFD700";
+    el.baseColor.value = "#ffffff";
+    el.oceanColor.value = "#e0f0ff";
     background.attr("fill", "#e0f0ff");
-
-    document.getElementById("strokeWidth").value = "0.3";
-    document.getElementById("strokeValue").textContent = "0.3px";
-    svg.selectAll("path.country, .equator-line, .grid-line").style("stroke-width", "0.3px");
-
-    gridVisible = false;
-    gridGroup1.style("display", "none");
-    gridGroup2.style("display", "none");
-
-    labelsVisible = false;
-    updateLabels();
-
-    equatorVisible = true;
-    equatorGroup1.style("display", "block");
-    equatorGroup2.style("display", "block");
+    el.strokeWidth.value = "0.3";
+    el.strokeValue.textContent = "0.3px";
+    svg.selectAll("path.country,.equator-line,.grid-line,.land-outline,.border-mesh,.lake").style("stroke-width","0.3px");
+    gridVisible = false;   gridGroup1.style("display","none"); gridGroup2.style("display","none");
+    labelsVisible = false; updateLabels();
+    equatorVisible = true; equatorGroup1.style("display","block"); equatorGroup2.style("display","block");
+    bordersVisible = true; updateBorders();
+    updateColors();
+    setToggleEmoji('toggleLabels',  labelsVisible);
+    setToggleEmoji('toggleBorders', bordersVisible);
+    setToggleEmoji('toggleGrids',   gridVisible);
+    setToggleEmoji('toggleEquator', equatorVisible);
+    // 호수: 주요 15개 모두 켜기, 전체 호수 끄기
+    selectedMajorLakes.clear();
+    MAJOR_LAKES.forEach(l => { if (majorLakeFeatures.has(l.ko)) selectedMajorLakes.add(l.ko); });
+    showAllLakes = false;
+    renderMajorLakes();
+    renderOtherLakes();
+    if (lakePanelOpen) buildLakeList();
+    selectedCities.clear();
+    updateSummary();
+    buildPanelList('');
+    renderCityDots();
+    manualPins = []; pinCounter = 0;
+    buildPinList(); renderPins();
+    closePanels();
+    closeLakePanel();
   };
 
-  document.getElementById("baseColorSelect").addEventListener("change", updateColors);
-  document.getElementById("strokeWidth").addEventListener("input", () => {
-    const w = document.getElementById("strokeWidth").value;
-    document.getElementById("strokeValue").textContent = w + 'px';
-    svg.selectAll("path.country, .equator-line, .grid-line").style("stroke-width", w + 'px');
+  // 타이틀 클릭으로 초기화
+  document.querySelector('#header .title').addEventListener('click', () => $('resetZoom').click());
+
+  // ========== PNG 저장 ==========
+  $('savePng').addEventListener('click', () => {
+    const clone = el.svg.cloneNode(true);
+    clone.querySelectorAll('.country').forEach(e => {
+      e.setAttribute('style', `stroke:${e.style.stroke || '#666'};stroke-width:${e.style.strokeWidth || '0.3px'};fill:${e.getAttribute('fill') || '#fff'}`);
+    });
+    clone.querySelectorAll('.land-outline').forEach(e => e.setAttribute('style','stroke:#666;stroke-width:0.3px;fill:none'));
+    clone.querySelectorAll('.border-mesh').forEach(e => e.setAttribute('style',`stroke:#666;stroke-width:0.3px;fill:none;display:${e.style.display}`));
+    clone.querySelectorAll('.lake').forEach(e => {
+      const fill = e.getAttribute('fill') || '#e0f0ff';
+      e.setAttribute('style', `stroke:#888;stroke-width:${e.style.strokeWidth || '0.3px'};fill:${fill}`);
+    });
+    clone.querySelectorAll('.equator-line').forEach(e => e.setAttribute('style','stroke:red;stroke-width:0.3px;fill:none'));
+    clone.querySelectorAll('.grid-line').forEach(e => e.setAttribute('style','stroke:#ccc;stroke-width:0.5px;stroke-dasharray:2 2;fill:none'));
+
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}));
+    const img = new Image();
+    img.onload = () => {
+      const vb = el.svg.viewBox.baseVal;
+      const canvas = document.createElement('canvas');
+      canvas.width = vb.width * 2; canvas.height = vb.height * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = el.oceanColor.value;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'coloring-map.png';
+        a.click();
+      }, 'image/png');
+    };
+    img.src = url;
   });
 
+  // ========== 초기 렌더 ==========
   updateColors();
-
-  // === 타이틀 클릭 시 '초기화' 버튼 클릭 효과 ===
-  document.querySelector('header span').addEventListener('click', () => {
-    document.getElementById('resetZoom').click();
-  });
+  renderCityDots();
+  renderPins();
+  buildPinList();
+  updateSummary();
 })();
 </script>
 
-  <script>
-    document.getElementById('savePng').addEventListener('click', () => {
-      const svgNode = document.getElementById('map');
-      const clone = svgNode.cloneNode(true);
-
-      clone.querySelectorAll('.country').forEach(el => {
-        const fill = el.getAttribute('fill') || '#ffffff';
-        const stroke = el.getAttribute('stroke') || '#666';
-        const strokeWidth = el.style.strokeWidth || '0.3px';
-        el.setAttribute('style', `stroke: ${stroke}; stroke-width: ${strokeWidth}; fill: ${fill}`);
-      });
-      clone.querySelectorAll('.equator-line').forEach(el => {
-        el.setAttribute('style', 'stroke: red; stroke-width: 0.3px; fill: none');
-      });
-      clone.querySelectorAll('.grid-line').forEach(el => {
-        el.setAttribute('style', 'stroke: #cccccc; stroke-width: 0.5px; stroke-dasharray: 2 2; fill: none');
-      });
-
-      const serializer = new XMLSerializer();
-      const svgString = serializer.serializeToString(clone);
-      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-
-      const image = new Image();
-      image.onload = () => {
-        const canvas = document.createElement('canvas');
-        const vb = svgNode.viewBox.baseVal;
-        const scale = 2;
-        canvas.width = vb.width * scale;
-        canvas.height = vb.height * scale;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(blob => {
-          const a = document.createElement('a');
-          const pngUrl = URL.createObjectURL(blob);
-          a.href = pngUrl;
-          a.download = 'coloring-map.png';
-          a.click();
-          URL.revokeObjectURL(pngUrl);
-        }, 'image/png');
-      };
-      image.onerror = err => console.error('이미지 로딩 실패:', err);
-      image.src = url;
-    });
-  </script>
-
-<footer style="position: fixed; bottom: 6px; right: 10px; font-size: 9px; color: #999; z-index: 999;"><a href="https://geotasoo.tistory.com" target="_blank" style="color: inherit; text-decoration: none;">@geotasoo.com</a></footer>
 </body>
 </html>
