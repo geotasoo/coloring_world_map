@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🗺️ 세계지도 색칠하기 & 점찍기</title>
   <style>
-    /* ========== 기본 ========== */
     html, body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; }
     body { display:flex; flex-direction:column; font-family:sans-serif; }
 
-    /* ========== 헤더 ========== */
     #header {
       background:#0F6E56; color:#fff; padding:10px; font-size:18px;
       display:flex; justify-content:space-between; align-items:center;
@@ -19,14 +17,12 @@
     #iconLinks { display:flex; gap:12px; align-items:center; position:relative; }
     #iconLinks a { color:#fff; font-size:18px; text-decoration:none; }
 
-    /* ========== 툴바 ========== */
     #toolbar {
       background:#f8f8f8; padding:8px;
       display:flex; flex-wrap:wrap; gap:10px; align-items:center;
       border-bottom:1px solid #ddd; flex:0 0 auto;
     }
 
-    /* 툴바 버튼 공통 */
     .tb-btn {
       border:1px solid #ccc; border-radius:4px;
       padding:5px 10px; cursor:pointer;
@@ -43,12 +39,10 @@
       background:#fff3e0; border-color:#f5a623;
     }
 
-    /* ========== 메인 컨테이너 ========== */
     #main-container { display:flex; flex:1 1 auto; overflow:hidden; }
     #map-wrap { flex:1 1 auto; overflow:hidden; position:relative; }
     #map { width:100%; height:100%; display:block; }
 
-    /* ========== 사이드 패널 공통 ========== */
     .side-panel {
       width:0; min-width:0;
       background:#fff; border-left:none;
@@ -79,7 +73,6 @@
       font-size:16px !important; color:#999; padding:0 2px !important;
     }
 
-    /* 검색 바 */
     #panel-search-wrap {
       flex-shrink:0; display:flex; align-items:center;
       border-bottom:1px solid #eee; background:#fafafa;
@@ -97,7 +90,6 @@
     }
     #btn-search-clear:hover { background:#c5d8fd; }
 
-    /* 선택 요약 */
     .panel-summary {
       flex-shrink:0; padding:5px 10px;
       font-size:11px;
@@ -106,7 +98,6 @@
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
-    /* 리스트 */
     .panel-list { overflow-y:auto; flex:1 1 auto; }
     .continent-label {
       padding:5px 10px; background:#efefef;
@@ -132,7 +123,6 @@
     .no-result { padding:20px; text-align:center; color:#bbb; font-size:12px; }
     .pin-empty { padding:20px; text-align:center; color:#bbb; font-size:12px; line-height:1.8; }
 
-    /* ========== 툴팁 (통합) ========== */
     .tooltip {
       position:fixed; display:none;
       padding:4px 8px; font-size:12px;
@@ -141,7 +131,6 @@
       z-index:9999; white-space:nowrap; will-change:transform;
     }
 
-    /* ========== SVG 요소 ========== */
     .country { cursor:pointer; stroke:#666; stroke-width:0.3px; }
     .selected { stroke:#333; }
     .labels {
@@ -152,14 +141,12 @@
     .equator-line { fill:none; stroke:red; stroke-width:0.3px; }
     .grid-line { stroke:#ccc; stroke-width:0.5px; stroke-dasharray:2 2; fill:none; }
 
-    /* ========== 팔레트 ========== */
     .palette-box {
       width:20px; height:20px; border:1px solid #aaa; cursor:pointer;
       transition:transform .15s, border-color .15s;
     }
     .palette-box:hover { transform:scale(1.2); border-color:#333; }
 
-    /* ========== 푸터 ========== */
     #footer {
       position:fixed; bottom:6px; right:10px;
       font-size:9px; color:#999; z-index:999;
@@ -206,11 +193,11 @@
   </label>
   <label>선 굵기:
     <input type="range" id="strokeWidth" min="0.1" max="1.0" step="0.1" value="0.3">
-    <span id="strokeValue">0.3px</span>
+    <span id="strokeValue">0.3</span>
   </label>
   <label>점 크기:
     <input type="range" id="dotSize" min="2" max="14" step="1" value="5">
-    <span id="dotSizeValue">5px</span>
+    <span id="dotSizeValue">5</span>
   </label>
   <label>점 색상: <input type="color" id="dotColor" value="#e53935"></label>
   <label style="display:flex; align-items:center; gap:4px;">
@@ -226,8 +213,6 @@
   <button id="toggleBorders" class="tb-btn">🌝 국경선</button>
   <button id="toggleGrids"   class="tb-btn">🌚 위선경선</button>
   <button id="toggleEquator" class="tb-btn">🌝 적도</button>
-  <button id="zoomIn"    class="tb-btn">＋</button>
-  <button id="zoomOut"   class="tb-btn">－</button>
   <button id="resetZoom" class="tb-btn">초기화</button>
   <button id="savePng"   class="tb-btn">PNG 저장</button>
   <span id="zoomLevel">확대 레벨: 1.00</span>
@@ -239,7 +224,7 @@
 <div id="main-container">
   <div id="map-wrap">
     <div id="helpLink">
-      <div>PC에서 사용을 권장합니다. 점찍기가 힘들어요.</div>
+      <div>PC에서 사용을 권장합니다. 모바일에서는 점찍기가 힘들어요.</div>
       <div>이 웹페이지는 모두 황병삼샘 덕분입니다. 고맙습니다.</div>
       <a href="https://geotasoo.tistory.com/entry/%EC%84%B8%EA%B3%84%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank">사용법보기/생각나누기</a>
     </div>
@@ -297,8 +282,6 @@
 <script src="https://unpkg.com/topojson-client@3"></script>
 <script>
 // ========== 주요 호수 카탈로그 (14개) ==========
-// 주요 호수는 이름 매칭으로 개별 식별 (툴팁에 한글명 표시)
-// 그 외 모든 호수는 '전체 호수' 토글로 한 번에 표시 (툴팁 없음)
 const MAJOR_LAKES = [
   {en:"Lake Baikal",     ko:"바이칼호"},
   {en:"Aral Sea",        ko:"아랄해"},
@@ -316,7 +299,9 @@ const MAJOR_LAKES = [
   {en:"Lake Titicaca",   ko:"티티카카호"},
 ];
 
-// Natural Earth 데이터에서 이름이 다를 수 있는 경우를 위한 별칭
+// 디폴트에서 꺼둘 호수
+const LAKE_DEFAULT_OFF = new Set(["사해", "그레이트솔트레이크", "티티카카호"]);
+
 const LAKE_NAME_ALIASES = {
   "L. Superior": "Lake Superior",
   "L. Michigan": "Lake Michigan",
@@ -439,9 +424,7 @@ let CITIES = [
   {name:"호바트",continent:"오세아니아",lat:-42.8821,lng:147.3272},
 ];
 
-// ========== 메인 앱 (단일 IIFE) ==========
 (async function () {
-  // --- DOM 캐싱 (반복 조회 제거) ---
   const $ = id => document.getElementById(id);
   const el = {
     svg: $('map'),
@@ -470,7 +453,6 @@ let CITIES = [
     btnManualClear: $('btn-manual-clear'),
   };
 
-  // --- 헤더 아이콘 툴팁 (통합 .tooltip 스타일 재사용) ---
   document.querySelectorAll('#iconLinks a').forEach(link => {
     link.addEventListener('pointerenter', () => {
       el.linkTooltip.textContent = link.dataset.tip;
@@ -483,7 +465,6 @@ let CITIES = [
     link.addEventListener('pointerleave', () => { el.linkTooltip.style.display = 'none'; });
   });
 
-  // --- 상태 ---
   const selectedCities = new Set();
   const collapsedContinents = new Set(CONTINENT_ORDER);
   const countryColors = new Map();
@@ -493,7 +474,6 @@ let CITIES = [
   let panelsOpen = false;
   let gridVisible = false, labelsVisible = false, equatorVisible = true, bordersVisible = true;
 
-  // --- SVG 초기화 ---
   const svg = d3.select(el.svg);
   const vw = window.innerWidth;
   const vh = el.svg.parentElement.clientHeight || (window.innerHeight - el.toolbar.offsetHeight - 40);
@@ -510,7 +490,6 @@ let CITIES = [
     .translate([vw / 2, vh / 2]);
   const path = d3.geoPath().projection(projection);
 
-  // --- SVG 그룹 ---
   const mapGroup1     = svg.append("g").attr("class","map1");
   const mapGroup2     = svg.append("g").attr("class","map2").attr("transform",`translate(${vw},0)`);
   const lakeGroup1    = svg.append("g").attr("class","lakes1");
@@ -528,7 +507,6 @@ let CITIES = [
   const pinGroup1     = svg.append("g").attr("class","pins1");
   const pinGroup2     = svg.append("g").attr("class","pins2").attr("transform",`translate(${vw},0)`);
 
-  // --- 격자 / 적도 ---
   const graticule = d3.geoGraticule().step([30, 30]);
   gridGroup1.append("path").datum(graticule()).attr("class","grid-line").attr("d",path);
   gridGroup2.append("path").datum(graticule()).attr("class","grid-line").attr("d",path)
@@ -540,12 +518,10 @@ let CITIES = [
   equatorGroup1.append("path").datum(equator).attr("class","equator-line").attr("d",path);
   equatorGroup2.append("path").datum(equator).attr("class","equator-line").attr("d",path).attr("transform",`translate(${vw},0)`);
 
-  // --- 팔레트 박스 ---
   document.querySelectorAll('.palette-box').forEach(box => {
     box.addEventListener('click', () => { el.colorPicker.value = box.getAttribute('data-color'); });
   });
 
-  // --- 월드 데이터 로드 (국가 + 호수 병렬 로드) ---
   const [world, lakesData] = await Promise.all([
     d3.json("https://unpkg.com/world-atlas@2/countries-50m.json"),
     d3.json("https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_lakes.geojson").catch(() => null)
@@ -554,7 +530,6 @@ let CITIES = [
   const landMesh   = topojson.mesh(world, world.objects.countries, (a,b) => a===b);
   const borderMesh = topojson.mesh(world, world.objects.countries, (a,b) => a!==b);
 
-  // --- 국가 path 렌더 ---
   [mapGroup1, mapGroup2].forEach(group => {
     group.selectAll("path.country").data(features).enter().append("path")
       .attr("class","country").attr("d",path).attr("fill","#ffffff")
@@ -576,21 +551,13 @@ let CITIES = [
       .attr("fill","none").attr("stroke","#666").attr("stroke-width","0.3px").attr("pointer-events","none");
   });
 
-  // --- 호수 데이터 분리 ---
-  // majorLakeFeatures: 주요 15개 (이름 매칭) — 개별 체크박스
-  // otherLakeFeatures: 나머지 전체 — 전체 토글 하나로만 제어 (툴팁 없음)
-  const majorLakeFeatures = new Map();   // 한글명 → GeoJSON feature
+  const majorLakeFeatures = new Map();
   const otherLakeFeatures = [];
   if (lakesData && lakesData.features) {
     lakesData.features.forEach(f => {
       let en = f.properties?.name || f.properties?.name_en;
       if (!en) return;
-      
-      // 별칭 확인
-      if (LAKE_NAME_ALIASES[en]) {
-        en = LAKE_NAME_ALIASES[en];
-      }
-      
+      if (LAKE_NAME_ALIASES[en]) en = LAKE_NAME_ALIASES[en];
       if (MAJOR_LAKE_BY_EN.has(en)) {
         majorLakeFeatures.set(MAJOR_LAKE_BY_EN.get(en).ko, f);
       } else {
@@ -599,9 +566,11 @@ let CITIES = [
     });
   }
 
-  // 선택 상태: 주요 호수 개별 on/off (기본: 전부 켜짐), 전체 호수 토글 (기본: 꺼짐)
+  // 디폴트: 사해, 그레이트솔트레이크, 티티카카호 제외하고 켜기
   const selectedMajorLakes = new Set(
-    MAJOR_LAKES.filter(l => majorLakeFeatures.has(l.ko)).map(l => l.ko)
+    MAJOR_LAKES
+      .filter(l => majorLakeFeatures.has(l.ko) && !LAKE_DEFAULT_OFF.has(l.ko))
+      .map(l => l.ko)
   );
   let showAllLakes = false;
 
@@ -642,10 +611,8 @@ let CITIES = [
   renderMajorLakes();
   renderOtherLakes();
 
-  // --- 중심점 캐시 ---
   const centroids = new Map(features.map(f => [f.id, projection(d3.geoCentroid(f))]));
 
-  // ========== 렌더 함수 ==========
   function updateColors() {
     const base = el.baseColor.value;
     [mapGroup1, mapGroup2].forEach(g => {
@@ -718,7 +685,6 @@ let CITIES = [
     });
   }
 
-  // ========== 사이드 패널 ==========
   function updateSummary() {
     if (selectedCities.size === 0) {
       el.panelSummary.textContent = '선택된 도시 없음';
@@ -814,7 +780,6 @@ let CITIES = [
             cb.checked = true;
             nameEl.classList.add('checked');
           }
-          // 대륙 배지 갱신
           const cnt = sorted.filter(c => selectedCities.has(c.name)).length;
           let b = lblRight.querySelector('span[data-badge]');
           if (!b && cnt > 0) {
@@ -849,7 +814,6 @@ let CITIES = [
     }
   }
 
-  // ========== 핀 패널 ==========
   function buildPinList() {
     el.pinList.innerHTML = '';
     const visibleCount = manualPins.filter(p => p.visible).length;
@@ -905,7 +869,6 @@ let CITIES = [
     });
   }
 
-  // ========== 패널 열고 닫기 ==========
   function openPanels() {
     panelsOpen = true;
     el.cityPanel.classList.add('open');
@@ -936,7 +899,6 @@ let CITIES = [
     el.svg.style.outline = '';
   }
 
-  // ========== 줌 ==========
   const zoomBehavior = d3.zoom().scaleExtent([0.5, 8])
     .on("zoom", ({transform}) => {
       const {k, x, y} = transform;
@@ -961,37 +923,24 @@ let CITIES = [
     });
   svg.call(zoomBehavior).on("dblclick.zoom", null);
 
-  // ========== 이모지 토글 ==========
   function setToggleEmoji(id, visible) {
     const btn = $(id);
     const label = btn.textContent.replace(/🌝|🌚/, '').trim();
     btn.textContent = (visible ? '🌝 ' : '🌚 ') + label;
   }
 
-  // ========== 지도 클릭 → 점 찍기 ==========
-  // 핵심 아이디어: 도시 점과 동일하게 경도/위도로 저장
-  //  → renderCityDots처럼 projection([lng,lat])으로 렌더하면 언제나 정확
   svg.on('click', function(event) {
     if (!manualMode) return;
-
-    // 1. 화면 좌표 → SVG viewBox 좌표
     const pt = el.svg.createSVGPoint();
     pt.x = event.clientX;
     pt.y = event.clientY;
     const svgP = pt.matrixTransform(el.svg.getScreenCTM().inverse());
-
-    // 2. 줌 역변환 → 줌 적용 전 viewBox 좌표
     const t = d3.zoomTransform(el.svg);
     let ux = (svgP.x - t.x) / t.k;
     const uy = (svgP.y - t.y) / t.k;
-
-    // 3. 지도2 영역이면 지도1 좌표로 정규화
     if (ux >= vw) ux -= vw;
-
-    // 4. 지도 좌표 → 경도/위도 (projection.invert)
     const lngLat = projection.invert([ux, uy]);
     if (!lngLat) return;
-
     pinCounter++;
     manualPins.push({ lng: lngLat[0], lat: lngLat[1], num: pinCounter, visible: true });
     buildPinList();
@@ -999,7 +948,6 @@ let CITIES = [
     event.stopPropagation();
   });
 
-  // ========== 이벤트 바인딩 ==========
   el.btnDotPanel.addEventListener('click', () => panelsOpen ? closePanels() : openPanels());
   $('btn-panel-close').addEventListener('click', closePanels);
   $('btn-pin-panel-close').addEventListener('click', closePanels);
@@ -1031,15 +979,13 @@ let CITIES = [
     el.panelSearch.focus();
   });
 
-  // 도시 점 크기/색상
   el.dotSize.addEventListener('input', () => {
-    el.dotSizeValue.textContent = el.dotSize.value + 'px';
+    el.dotSizeValue.textContent = el.dotSize.value;
     renderCityDots(); renderPins();
   });
   el.dotColor.addEventListener('input', () => { renderCityDots(); renderPins(); });
   el.dotStroke.addEventListener('change', () => { renderCityDots(); renderPins(); });
 
-  // 바다 / 육지 / 선 굵기
   el.oceanColor.addEventListener('change', () => {
     background.attr("fill", el.oceanColor.value);
     svg.selectAll("path.lake").attr("fill", el.oceanColor.value);
@@ -1047,12 +993,11 @@ let CITIES = [
   el.baseColor.addEventListener('change', updateColors);
   el.strokeWidth.addEventListener('input', () => {
     const w = el.strokeWidth.value;
-    el.strokeValue.textContent = w + 'px';
+    el.strokeValue.textContent = w;
     svg.selectAll("path.country,.equator-line,.grid-line,.land-outline,.border-mesh,.lake")
       .style("stroke-width", w + 'px');
   });
 
-  // 토글
   $('toggleLabels').onclick  = () => { labelsVisible  = !labelsVisible;  updateLabels();  setToggleEmoji('toggleLabels',  labelsVisible); };
   $('toggleBorders').onclick = () => { bordersVisible = !bordersVisible; updateBorders(); setToggleEmoji('toggleBorders', bordersVisible); };
   $('toggleGrids').onclick   = () => {
@@ -1088,7 +1033,6 @@ let CITIES = [
   $('btn-lake-panel').addEventListener('click', () => lakePanelOpen ? closeLakePanel() : openLakePanel());
   $('btn-lake-panel-close').addEventListener('click', closeLakePanel);
 
-  // 전체 해제: 주요호수 + 전체호수 둘 다 끔
   $('btn-lake-deselect').addEventListener('click', () => {
     selectedMajorLakes.clear();
     showAllLakes = false;
@@ -1096,10 +1040,11 @@ let CITIES = [
     renderMajorLakes();
     renderOtherLakes();
   });
-  // 기본값: 주요 호수 전부 켜기, 전체 호수 끄기
   $('btn-lake-default').addEventListener('click', () => {
     selectedMajorLakes.clear();
-    MAJOR_LAKES.forEach(l => { if (majorLakeFeatures.has(l.ko)) selectedMajorLakes.add(l.ko); });
+    MAJOR_LAKES.forEach(l => {
+      if (majorLakeFeatures.has(l.ko) && !LAKE_DEFAULT_OFF.has(l.ko)) selectedMajorLakes.add(l.ko);
+    });
     showAllLakes = false;
     buildLakeList();
     renderMajorLakes();
@@ -1123,7 +1068,6 @@ let CITIES = [
     const list = $('lake-list');
     list.innerHTML = '';
 
-    // === 섹션 1: 주요 호수 헤더 ===
     const header = document.createElement('div');
     header.className = 'continent-label';
     header.style.cursor = 'default';
@@ -1137,9 +1081,8 @@ let CITIES = [
     header.appendChild(hRight);
     list.appendChild(header);
 
-    // 주요 호수 15개 — 카탈로그 순서대로 (지리적 의미가 있는 순서)
     MAJOR_LAKES.forEach(lake => {
-      if (!majorLakeFeatures.has(lake.ko)) return;  // GeoJSON에 없는 건 스킵
+      if (!majorLakeFeatures.has(lake.ko)) return;
       const row = document.createElement('div');
       row.className = 'city-row';
 
@@ -1173,7 +1116,6 @@ let CITIES = [
       list.appendChild(row);
     });
 
-    // === 섹션 2: 전체 호수 토글 ===
     const spacer = document.createElement('div');
     spacer.style.cssText = 'height:10px; background:#fafafa; border-top:1px solid #eee;';
     list.appendChild(spacer);
@@ -1215,11 +1157,6 @@ let CITIES = [
     updateLakeSummary();
   }
 
-  // 줌 버튼
-  $('zoomIn').onclick  = () => svg.transition().call(zoomBehavior.scaleTo, Math.min(8, d3.zoomTransform(el.svg).k + 0.1));
-  $('zoomOut').onclick = () => svg.transition().call(zoomBehavior.scaleTo, Math.max(0.5, d3.zoomTransform(el.svg).k - 0.1));
-
-  // 초기화
   $('resetZoom').onclick = () => {
     const korea = features.find(f => f.properties.name === 'South Korea');
     if (korea) {
@@ -1234,7 +1171,7 @@ let CITIES = [
     el.oceanColor.value = "#e0f0ff";
     background.attr("fill", "#e0f0ff");
     el.strokeWidth.value = "0.3";
-    el.strokeValue.textContent = "0.3px";
+    el.strokeValue.textContent = "0.3";
     svg.selectAll("path.country,.equator-line,.grid-line,.land-outline,.border-mesh,.lake").style("stroke-width","0.3px");
     gridVisible = false;   gridGroup1.style("display","none"); gridGroup2.style("display","none");
     labelsVisible = false; updateLabels();
@@ -1245,9 +1182,10 @@ let CITIES = [
     setToggleEmoji('toggleBorders', bordersVisible);
     setToggleEmoji('toggleGrids',   gridVisible);
     setToggleEmoji('toggleEquator', equatorVisible);
-    // 호수: 주요 15개 모두 켜기, 전체 호수 끄기
     selectedMajorLakes.clear();
-    MAJOR_LAKES.forEach(l => { if (majorLakeFeatures.has(l.ko)) selectedMajorLakes.add(l.ko); });
+    MAJOR_LAKES.forEach(l => {
+      if (majorLakeFeatures.has(l.ko) && !LAKE_DEFAULT_OFF.has(l.ko)) selectedMajorLakes.add(l.ko);
+    });
     showAllLakes = false;
     renderMajorLakes();
     renderOtherLakes();
@@ -1262,10 +1200,8 @@ let CITIES = [
     closeLakePanel();
   };
 
-  // 타이틀 클릭으로 초기화
   document.querySelector('#header .title').addEventListener('click', () => $('resetZoom').click());
 
-  // ========== PNG 저장 ==========
   $('savePng').addEventListener('click', () => {
     const clone = el.svg.cloneNode(true);
     clone.querySelectorAll('.country').forEach(e => {
@@ -1300,7 +1236,6 @@ let CITIES = [
     img.src = url;
   });
 
-  // ========== 초기 렌더 ==========
   updateColors();
   renderCityDots();
   renderPins();
