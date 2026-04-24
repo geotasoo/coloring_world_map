@@ -171,9 +171,8 @@
     .eopt{font-size:24px;background:#f5f5f5;border:2px solid transparent;border-radius:8px;padding:4px 7px;cursor:pointer;transition:all .15s;line-height:1.3;}
     .eopt:hover{background:#e8f5e9;transform:scale(1.1);}
     .eopt.sel{border-color:#0F6E56;background:#e8f5e9;}
-    #gbtn{background:#0F6E56;color:#fff;border:none;border-radius:8px;padding:12px 36px;font-size:16px;cursor:pointer;font-weight:bold;opacity:.4;transition:opacity .2s;}
-    #gbtn.rdy{opacity:1;}
-    #gbtn.rdy:hover{background:#0a5240;}
+    #gbtn{background:#0F6E56;color:#fff;border:none;border-radius:8px;padding:12px 36px;font-size:16px;cursor:pointer;font-weight:bold;transition:background .2s;}
+    #gbtn:hover{background:#0a5240;}
 
     #ghud{display:none;position:fixed;top:0;left:0;right:0;z-index:5500;background:rgba(15,110,86,.96);color:#fff;height:76px;padding:0 20px;box-shadow:0 2px 10px rgba(0,0,0,.3);}
     #ghud.on{display:grid;grid-template-columns:180px 1fr 240px;align-items:center;}
@@ -203,31 +202,31 @@
     #gfb{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6000;font-size:54px;pointer-events:none;animation:gbounce .6s ease forwards;}
     @keyframes gbounce{0%{opacity:0;transform:translate(-50%,-64%) scale(.5)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-44%) scale(.9)}}
 
-    #gresult{display:none;position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.62);justify-content:flex-start;align-items:center;flex-direction:column;padding-top:20px;overflow-y:auto;}
+    #gresult{display:none;position:fixed;inset:0;z-index:6000;background:transparent;justify-content:flex-start;align-items:center;flex-direction:column;padding-top:12px;overflow-y:auto;}
     #gresult.on{display:flex;}
-    .grbox{background:#fff;border-radius:16px;padding:24px 28px;width:520px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.3);margin-bottom:12px;}
-    .grbox h2{margin:0 0 3px;font-size:20px;text-align:center;}
-    .grsub{text-align:center;color:#888;font-size:12px;margin-bottom:12px;}
-    .grbadges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
-    .grbadge{border-radius:10px;padding:7px 14px;text-align:center;min-width:70px;}
-    .grbadge .n{font-size:26px;font-weight:bold;}
-    .grbadge .l{font-size:11px;}
+    .grbox{background:#37474f;color:#fff;border-radius:12px;padding:20px 28px;width:auto;max-width:600px;box-shadow:0 8px 40px rgba(0,0,0,.6);margin-bottom:8px;}
+    .grbox h2{margin:0 0 3px;font-size:18px;text-align:center;}
+    .grsub{text-align:center;color:#b0bec5;font-size:12px;margin-bottom:10px;}
+    .grbadges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+    .grbadge{border-radius:10px;padding:8px 16px;text-align:center;min-width:75px;}
+    .grbadge .n{font-size:28px;font-weight:bold;}
+    .grbadge .l{font-size:12px;font-weight:600;}
     .bc{background:#e8f5e9;color:#2e7d32;}
     .bw{background:#ffebee;color:#c62828;}
     .bp{background:#fff8e1;color:#e65100;}
-    .grsec{font-size:11px;font-weight:bold;color:#aaa;margin:10px 0 5px;border-top:1px solid #eee;padding-top:8px;}
-    .grtags{display:flex;flex-wrap:wrap;gap:4px;}
+    .grsec{font-size:11px;font-weight:bold;color:#aaa;margin:8px 0 4px;border-top:1px solid #eee;padding-top:6px;}
+    .grtags{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
     .gtag{padding:3px 9px;border-radius:20px;font-size:12px;}
     .tc{background:#e8f5e9;color:#2e7d32;}
     .tw{background:#ffebee;color:#c62828;}
     .tp{background:#fff8e1;color:#e65100;}
-    .grbtns{display:flex;gap:10px;margin-top:14px;justify-content:center;}
+    .grbtns{display:flex;gap:10px;margin-top:12px;justify-content:center;}
     .grbtn{border:none;border-radius:8px;padding:10px 22px;font-size:14px;cursor:pointer;font-weight:bold;}
     .grbtn-go{background:#0F6E56;color:#fff;}
     .grbtn-go:hover{background:#0a5240;}
     .grbtn-cl{background:#eee;color:#333;}
     .grbtn-cl:hover{background:#ddd;}
-    .lbbox{background:#fff;border-radius:16px;padding:18px 26px;width:520px;max-width:96vw;box-shadow:0 4px 20px rgba(0,0,0,.15);margin-bottom:24px;}
+    .lbbox{background:#fff;border-radius:12px;padding:14px 20px;width:90vw;max-width:1200px;box-shadow:0 4px 20px rgba(0,0,0,.15);margin-bottom:16px;}
     .lbbox h3{margin:0 0 10px;font-size:15px;}
     .lbrow{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:14px;}
     .lbrow:last-child{border-bottom:none;}
@@ -369,7 +368,6 @@
   </div>
 </div>
 
-<!-- 게임 시작 오버레이 -->
 <div id="game-overlay">
   <div class="gbox">
     <h2>🍳 나라 찾기</h2>
@@ -378,11 +376,16 @@
       • 1분 안에 나라 이름을 보고 지도에서 찾아 클릭!<br>
       • 3번 틀리면 자동으로 다음 나라로 넘어가요<br>
       • 패스 3회 사용 가능<br>
-      • <b>💡 힌트</b>: 수도 좌표 표시 (단, <b>-1초</b> 패널티!)
+      • <b>💡 힌트</b>: 수도 좌표 표시 (단, <b>-1초</b> 패널티!)<br>
+      • <b>🖱️ 조작법</b>: 마우스 스크롤로 확대/축소, 드래그하여 지도 이동
     </div>
-    <div class="epick-title">🍽️ 나의 음식 아이콘을 골라주세요</div>
-    <div class="egrid" id="egrid"></div>
-    <button id="gbtn" disabled>이모지를 선택하세요</button>
+    <div style="background:#ffebee;border:1px solid #ef5350;border-radius:8px;padding:10px 14px;margin:12px 0;font-size:12px;color:#c62828;line-height:1.6;">
+      <b>⚠️ 주의:</b> 게임 종료 후 지도로 돌아올 때 모든 색칠과 점이 초기화됩니다!
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
+      <button id="gbtn" style="background:#0F6E56;color:#fff;border:none;border-radius:8px;padding:12px 32px;font-size:16px;cursor:pointer;font-weight:bold;">🎮 시작!</button>
+      <button id="gcancel-btn" style="background:#eee;color:#333;border:none;border-radius:8px;padding:12px 32px;font-size:16px;cursor:pointer;font-weight:bold;">나가기</button>
+    </div>
   </div>
 </div>
 
@@ -607,6 +610,21 @@ let CITIES = [
   let panelsOpen = false;
   let gridVisible = false, labelsVisible = false, equatorVisible = true, bordersVisible = true;
 
+  // Expose these globally for game reset
+  window._gameMapVars = {
+    selectedCities: selectedCities,
+    get manualPins() { return manualPins; },
+    set manualPins(val) { manualPins = val; },
+    clearManualPins() { 
+      manualPins.length = 0; 
+      pinCounter = 0;
+    },
+    get panelsOpen() { return panelsOpen; },
+    set panelsOpen(val) { panelsOpen = val; },
+    cityPanel: null,  // Will be set later
+    pinPanel: null    // Will be set later
+  };
+
   const svg = d3.select(el.svg);
   const vw = window.innerWidth;
   const vh = el.svg.parentElement.clientHeight || (window.innerHeight - el.toolbar.offsetHeight - 40);
@@ -626,6 +644,10 @@ let CITIES = [
 
   const mapGroup1     = svg.append("g").attr("class","map1");
   const mapGroup2     = svg.append("g").attr("class","map2").attr("transform",`translate(${vw},0)`);
+  
+  // Expose for markers
+  window._gameMapGroup1 = mapGroup1;
+  window._gameMapGroup2 = mapGroup2;
   const lakeGroup1    = svg.append("g").attr("class","lakes1");
   const lakeGroup2    = svg.append("g").attr("class","lakes2").attr("transform",`translate(${vw},0)`);
   const otherLakeGroup1 = svg.append("g").attr("class","other-lakes1");
@@ -805,6 +827,7 @@ let CITIES = [
         .on("pointerleave", () => { el.tooltip.style("display","none"); });
     });
   }
+  window._gameRenderCityDots = renderCityDots;
 
   function renderPins() {
     const r = parseFloat(el.dotSize.value);
@@ -829,6 +852,7 @@ let CITIES = [
       });
     });
   }
+  window._gameRenderPins = renderPins;
 
   function updateSummary() {
     if (selectedCities.size === 0) {
@@ -1032,6 +1056,7 @@ let CITIES = [
     el.btnDotPanel.classList.remove('active');
     exitManualMode();
   }
+  window._gameClosePanels = closePanels;
 
   function enterManualMode() {
     manualMode = true;
@@ -1071,6 +1096,10 @@ let CITIES = [
       }
     });
   svg.call(zoomBehavior).on("dblclick.zoom", null);
+  
+  // Expose for game reset
+  window._gameZoomBehavior = zoomBehavior;
+  window._gameSvg = svg;
 
   function setToggleEmoji(id, visible) {
     const btn = $(id);
@@ -1182,6 +1211,7 @@ let CITIES = [
     $('btn-lake-panel').classList.remove('active');
     $('btn-lake-panel').textContent = '💧 호수';
   }
+  window._gameCloseLakePanel = closeLakePanel;
   $('btn-lake-panel').addEventListener('click', () => lakePanelOpen ? closeLakePanel() : openLakePanel());
   $('btn-lake-panel-close').addEventListener('click', closeLakePanel);
 
@@ -1550,25 +1580,7 @@ const DIFF = {
 let LB = [];  // 세션 순위표
 
 (function initGame() {
-  // ===== 이모지 그리드 렌더 =====
-  var grid = document.getElementById('egrid');
   var startBtn = document.getElementById('gbtn');
-  var selEmoji = null;
-
-  FOOD_EMOJIS.forEach(function(em) {
-    var b = document.createElement('div');
-    b.className = 'eopt';
-    b.textContent = em;
-    b.addEventListener('click', function() {
-      grid.querySelectorAll('.eopt').forEach(function(x){ x.classList.remove('sel'); });
-      b.classList.add('sel');
-      selEmoji = em;
-      startBtn.disabled = false;
-      startBtn.textContent = em + '  시작!';
-      startBtn.classList.add('rdy');
-    });
-    grid.appendChild(b);
-  });
 
   // ===== 🍳 버튼 =====
   document.getElementById('btn-game-egg').addEventListener('click', function() {
@@ -1577,10 +1589,17 @@ let LB = [];  // 세션 순위표
 
   // ===== 시작 버튼 =====
   startBtn.addEventListener('click', function() {
-    if (!selEmoji) return;
     document.getElementById('game-overlay').classList.remove('active');
-    startGame(selEmoji);
+    startGame(null); // No emoji needed
   });
+
+  // ===== 나가기 버튼 =====
+  var cancelBtn = document.getElementById('gcancel-btn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function() {
+      document.getElementById('game-overlay').classList.remove('active');
+    });
+  }
 
   // ===== 패스 =====
   document.getElementById('gpass-btn').addEventListener('click', passQ);
@@ -1626,17 +1645,55 @@ function startGame(emoji) {
   G.queue = buildQueue(getDiff(0));
   G.idx = 0; G.locked = false; G.emoji = emoji; G.hintUsed = false;
 
+  // HIDE TOOLBAR
   document.getElementById('toolbar').style.display = 'none';
   document.getElementById('ghud').classList.add('on');
 
-  // 지도 나라 회색으로
+  // ========== COMPLETE RESET FOR GAME ==========
+  
+  // 1. Clear all country colors
   d3.selectAll('path.country').attr('fill', '#ffffff')
     .classed('gcor', false).classed('gwfl', false).classed('gpas', false);
 
-  // 경위선 + 적도 켜기
+  // 2. Close ALL panels (city, pin, lake)
+  if (window._gameClosePanels) {
+    window._gameClosePanels();
+  }
+  if (window._gameCloseLakePanel) {
+    window._gameCloseLakePanel();
+  }
+
+  // 3. Clear all city dots and pins using exposed variables
+  if (window._gameMapVars) {
+    window._gameMapVars.selectedCities.clear();
+    window._gameMapVars.clearManualPins(); // Use method to properly clear
+  }
+  
+  // 4. Re-render to clear dots from map using exposed functions
+  if (window._gameRenderCityDots) window._gameRenderCityDots();
+  if (window._gameRenderPins) window._gameRenderPins();
+
+  // 5. Reset zoom and center to Korea view (scale 0.8, centered on Korea)
+  if (window._gameProjection && window._gameZoomBehavior && window._gameSvg) {
+    const koreaCoords = window._gameProjection([128, 36]); // Korea center
+    const vw = window.innerWidth;
+    const vh = document.getElementById('map').parentElement.clientHeight || (window.innerHeight - 80);
+    const centerX = vw / 2;
+    const centerY = vh / 2;
+    const scale = 0.8;
+    
+    // Transform to center Korea with zoom 0.8
+    const transform = d3.zoomIdentity
+      .translate(centerX, centerY)
+      .scale(scale)
+      .translate(-koreaCoords[0], -koreaCoords[1]);
+    
+    window._gameSvg.transition().duration(500).call(window._gameZoomBehavior.transform, transform);
+  }
+
+  // 6. Show grid lines and equator for game
   d3.selectAll('.grids1,.grids2').style('display','block');
   d3.selectAll('.equator1,.equator2').style('display','block');
-  // 경위선 좌표 라벨 표시
   showGridLabels();
 
   updatePassBtn(); updateWrong();
@@ -1692,9 +1749,9 @@ function handleGameClick(feature) {
       d3.selectAll('path.country').filter(function(d){ return d.properties.name === clicked; }).classed('gwfl', false);
       G.locked = false;
       if (G.wrongCnt >= 3) {
-        // 3번 틀리면 패스
+        // 3번 틀리면 빨강으로 표시
         G.log.push({name:en, ko:COUNTRY_KO[en], result:'wrong3'});
-        d3.selectAll('path.country').filter(function(d){ return d.properties.name === en; }).classed('gpas', true);
+        d3.selectAll('path.country').filter(function(d){ return d.properties.name === en; }).classed('gwfl', true);
         G.idx++;
         setTimeout(nextQ, 300);
       }
@@ -1742,45 +1799,50 @@ function endGame() {
   hideHintPop();
   d3.selectAll('.grids1,.grids2').style('display','none');
   removeGridLabels();
-  if (G.emoji) {
-    LB.push({emoji: G.emoji, score: G.score});
-    LB.sort(function(a,b){ return b.score - a.score; });
-    if (LB.length > 10) LB = LB.slice(0, 10);
+  
+  // Reset zoom to Korea center (0.8 scale) for result view
+  if (window._gameProjection && window._gameZoomBehavior && window._gameSvg) {
+    const koreaCoords = window._gameProjection([128, 36]);
+    const vw = window.innerWidth;
+    const vh = document.getElementById('map').parentElement.clientHeight || (window.innerHeight - 80);
+    const centerX = vw / 2;
+    const centerY = vh / 2;
+    const scale = 0.8;
+    
+    const transform = d3.zoomIdentity
+      .translate(centerX, centerY)
+      .scale(scale)
+      .translate(-koreaCoords[0], -koreaCoords[1]);
+    
+    // Wait for zoom animation to complete before showing result
+    window._gameSvg.transition().duration(500)
+      .call(window._gameZoomBehavior.transform, transform)
+      .on('end', function() {
+        // Show result AFTER zoom completes
+        showResult();
+      });
+  } else {
+    // No zoom behavior - show result immediately
+    showResult();
   }
-  showResult();
 }
 
 function showResult() {
   var corrects = G.log.filter(function(l){ return l.result === 'correct'; });
   var wrong3   = G.log.filter(function(l){ return l.result === 'wrong3'; });
   var passes   = G.log.filter(function(l){ return l.result === 'pass'; });
-  var myRank   = LB.findIndex(function(e){ return e.emoji === G.emoji && e.score === G.score; }) + 1;
+
+  // Add markers and labels on map for all result countries
+  addResultMarkers(corrects, wrong3, passes);
 
   var html = '<div class="grbox">';
-  html += '<h2>🗺️ 결과 ' + (G.emoji || '') + '</h2>';
-  html += '<div class="grsub">1분 동안 <b>' + G.score + '점</b> 획득!</div>';
+  // Remove title and score subtitle - just show badges
   html += '<div class="grbadges">';
   html += '<div class="grbadge bc"><div class="n">' + corrects.length + '</div><div class="l">✅ 정답</div></div>';
   html += '<div class="grbadge bw"><div class="n">' + wrong3.length + '</div><div class="l">❌ 3번 틀림</div></div>';
   html += '<div class="grbadge bp"><div class="n">' + passes.length + '</div><div class="l">⏭️ 패스</div></div>';
   html += '</div>';
-  if (corrects.length) html += '<div class="grsec">✅ 맞춘 나라 (' + corrects.length + ')</div><div class="grtags">' + corrects.map(function(l){ return '<span class="gtag tc">' + l.ko + '</span>'; }).join('') + '</div>';
-  if (wrong3.length)   html += '<div class="grsec">❌ 3번 틀린 나라 (' + wrong3.length + ')</div><div class="grtags">' + wrong3.map(function(l){ return '<span class="gtag tw">' + l.ko + '</span>'; }).join('') + '</div>';
-  if (passes.length)   html += '<div class="grsec">⏭️ 패스한 나라 (' + passes.length + ')</div><div class="grtags">' + passes.map(function(l){ return '<span class="gtag tp">' + l.ko + '</span>'; }).join('') + '</div>';
   html += '<div class="grbtns"><button class="grbtn grbtn-go" onclick="doRetry()">다시 하기</button><button class="grbtn grbtn-cl" onclick="doClose()">지도로 돌아가기</button></div>';
-  html += '</div>';
-
-  // 순위표
-  html += '<div class="lbbox"><h3>🏆 이번 세션 순위표</h3>';
-  if (LB.length === 0) {
-    html += '<div class="lbmt">아직 기록이 없어요</div>';
-  } else {
-    LB.forEach(function(e, i) {
-      var cls = i===0?'r1':i===1?'r2':i===2?'r3':'';
-      var isNew = (e.emoji === G.emoji && e.score === G.score && i+1 === myRank);
-      html += '<div class="lbrow"><span class="lbrnk ' + cls + '">' + (i+1) + '</span><span class="lbem">' + e.emoji + '</span>' + (isNew ? '<span class="lbnew">NEW</span>' : '') + '<span class="lbsc">' + e.score + '점</span></div>';
-    });
-  }
   html += '</div>';
 
   var rs = document.getElementById('gresult');
@@ -1788,9 +1850,63 @@ function showResult() {
   rs.classList.add('on');
 }
 
+// Add markers and labels for game result countries
+function addResultMarkers(corrects, wrong3, passes) {
+  // Remove any existing result markers
+  d3.selectAll('.result-marker').remove();
+  
+  if (!window._gameProjection || !window._gameFeatureByName) return;
+  if (!window._gameMapGroup1 || !window._gameMapGroup2) return;
+  
+  // Add markers to BOTH map groups (for wraparound)
+  var markerGroup1 = window._gameMapGroup1.append('g').attr('class', 'result-marker');
+  var markerGroup2 = window._gameMapGroup2.append('g').attr('class', 'result-marker');
+  
+  // Helper function to add label for a country
+  function addMarker(countryName, koreanName, color) {
+    var feature = window._gameFeatureByName.get(countryName);
+    if (!feature) return;
+    
+    // Get centroid
+    var centroid = d3.geoCentroid(feature);
+    var coords = window._gameProjection(centroid);
+    if (!coords) return;
+    
+    // Add to both groups
+    [markerGroup1, markerGroup2].forEach(function(markerGroup) {
+      // Add label only (no circle pin)
+      markerGroup.append('text')
+        .attr('x', coords[0])
+        .attr('y', coords[1])
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
+        .attr('font-weight', 'bold')
+        .attr('fill', color)
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 3)
+        .attr('paint-order', 'stroke')
+        .text(koreanName);
+    });
+  }
+  
+  // Add markers for each category
+  corrects.forEach(function(item) {
+    addMarker(item.name, item.ko, '#66bb6a'); // Green
+  });
+  
+  wrong3.forEach(function(item) {
+    addMarker(item.name, item.ko, '#ef5350'); // Red
+  });
+  
+  passes.forEach(function(item) {
+    addMarker(item.name, item.ko, '#ffa726'); // Orange
+  });
+}
+
 function doRetry() {
   document.getElementById('gresult').classList.remove('on');
   d3.selectAll('path.country').classed('gcor', false).classed('gwfl', false).classed('gpas', false);
+  d3.selectAll('.result-marker').remove(); // Remove markers
   if (window._gameUpdateColors) window._gameUpdateColors();
   document.getElementById('game-overlay').classList.add('active');
 }
@@ -1798,9 +1914,12 @@ function doRetry() {
 function doClose() {
   document.getElementById('gresult').classList.remove('on');
   d3.selectAll('path.country').classed('gcor', false).classed('gwfl', false).classed('gpas', false);
+  d3.selectAll('.result-marker').remove(); // Remove markers
   d3.selectAll('.grids1,.grids2').style('display','none');
   removeGridLabels();
   if (window._gameUpdateColors) window._gameUpdateColors();
+  // Complete reset like exitGame - click resetZoom to restore everything
+  document.getElementById('resetZoom').click();
 }
 
 function updatePassBtn() {
