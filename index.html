@@ -369,7 +369,6 @@
   </div>
 </div>
 
-
 <!-- 게임 시작 오버레이 -->
 <div id="game-overlay">
   <div class="gbox">
@@ -623,7 +622,7 @@ let CITIES = [
     .scale(vw / (2 * Math.PI))
     .translate([vw / 2, vh / 2]);
   const path = d3.geoPath().projection(projection);
-  window._gameProjection = projection;  // 게임에서 좌표 라벨용
+  window._gameProjection = projection;
 
   const mapGroup1     = svg.append("g").attr("class","map1");
   const mapGroup2     = svg.append("g").attr("class","map2").attr("transform",`translate(${vw},0)`);
@@ -1390,7 +1389,6 @@ let CITIES = [
 })();
 </script>
 
-
 <script>
 // ========== 나라 찾기 게임 ==========
 const FOOD_EMOJIS = ['🍕','🍔','🍜','🍣','🌮','🍩','🍦','🍗','🥗','🍱','🥐','🍛','🧆','🥩','🍤','🍙','🥘','🍝','🥪','🫕','🍢','🍖','🥟','🫔'];
@@ -1538,10 +1536,6 @@ const DIFF = {
 };
 
 let LB = [];  // 세션 순위표
-let gFeatures = null;  // 지도 features (나라 폴리곤) — 메인 스크립트에서 공유
-
-// features가 로드됐을 때 알림받기 위한 훅
-window._onFeaturesLoaded = null;
 
 (function initGame() {
   // ===== 이모지 그리드 렌더 =====
@@ -1716,7 +1710,6 @@ function useHint() {
   document.getElementById('gtimer').textContent = G.timer;
   document.getElementById('ghint-btn').disabled = true;
   showHintPop(cap ? '💡 수도: ' + cap : '💡 수도 정보 없음');
-  // 타임아웃 없음 — nextQ() 호출 시 hideHintPop()으로 닫힘
 }
 
 function exitGame() {
@@ -1819,7 +1812,6 @@ function showFB(text, color) {
 function showHintPop(text) {
   var p = document.getElementById('ghint-pop');
   p.textContent = text; p.style.display = 'block';
-  // 자동으로 닫히지 않음 — nextQ()에서 hideHintPop() 호출로 닫힘
 }
 function hideHintPop() {
   document.getElementById('ghint-pop').style.display = 'none';
@@ -1871,7 +1863,7 @@ function removeGridLabels() {
   d3.selectAll('.grid-coord-label').remove();
   d3.selectAll('.grid-line')
     .style('stroke', null).style('stroke-width', null).style('stroke-dasharray', null);
-  // null로 해제하면 CSS 기본값(파란 점선)으로 자동 복귀
+
 }
 </script>
 
