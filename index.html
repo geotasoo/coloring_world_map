@@ -677,8 +677,16 @@ let CITIES = [
         else countryColors.set(id, el.colorPicker.value);
         updateColors();
       })
-      .on("pointerenter",(event,d) => { el.tooltip.style("display","block").text(d.properties.name); })
-      .on("pointermove", event => { el.tooltip.style("transform",`translate(${event.clientX+26}px,${event.clientY+28}px)`); })
+      .on("pointerenter",(event,d) => { 
+        if (!(typeof G !== 'undefined' && G.active)) {
+          el.tooltip.style("display","block").text(d.properties.name); 
+        }
+      })
+      .on("pointermove", event => { 
+        if (!(typeof G !== 'undefined' && G.active)) {
+          el.tooltip.style("transform",`translate(${event.clientX+26}px,${event.clientY+28}px)`); 
+        }
+      })
       .on("pointerleave", () => { el.tooltip.style("display","none"); });
 
     group.append("path").datum(landMesh).attr("class","land-outline").attr("d",path)
@@ -1594,16 +1602,17 @@ var G = {
 };
 
 function getDiff(score) {
+  // Keep function for code structure, but result is not used anymore
   return score < 8 ? 1 : score < 15 ? 2 : 3;
 }
 
 function buildQueue(maxDiff) {
   var keys = Object.keys(COUNTRY_KO);
-  var svg = document.getElementById('map');
-  // features는 메인 스크립트의 전역 변수로 접근
+  // Filter only countries that exist in the map
   var validKeys = keys.filter(function(en) {
-    return (DIFF[en] || 3) <= maxDiff && window._gameFeatureByName && window._gameFeatureByName.has(en);
+    return window._gameFeatureByName && window._gameFeatureByName.has(en);
   });
+  // Full random shuffle - no difficulty filtering
   return validKeys.sort(function(){ return Math.random() - 0.5; });
 }
 
