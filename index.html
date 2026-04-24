@@ -256,7 +256,7 @@
 <body>
 
 <header id="header">
-  <span class="title">세계지도 색칠하기 & 점찍기 🎗️🗺️🍖 v2.2 20260424</span>
+  <span class="title">세계지도 색칠하기 & 점찍기 🎗️🗺️🍖 v2.1 20260421(어머! 지리데이!)</span>
   <div id="iconLinks">
     <button id="btn-game-egg" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0;line-height:1;" title="나라 찾기 게임">🎮</button>
     <a href="https://buymeacoffee.com/geotasoo" target="_blank" data-tip="커피보내기">☕</a>
@@ -1723,6 +1723,7 @@ function exitGame() {
   clearInterval(G.intv);
   G.active = false;
   document.getElementById('ghud').classList.remove('on');
+  document.getElementById('toolbar').style.display = '';  // 툴바 먼저 복구
   hideHintPop();
   // 초기화 버튼 클릭 — 줌/중심점/색상/경위선 전부 리셋
   document.getElementById('resetZoom').click();
