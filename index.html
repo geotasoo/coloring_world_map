@@ -256,7 +256,7 @@
 <body>
 
 <header id="header">
-  <span class="title">세계지도 색칠하기 & 점찍기 🎗️🗺️🍖 v2.1 20260421(어머! 지리데이!)</span>
+  <span class="title">세계지도 색칠하기 & 점찍기 🎗️🗺️🍖 v2.2 20260424</span>
   <div id="iconLinks">
     <button id="btn-game-egg" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0;line-height:1;" title="나라 찾기 게임">🎮</button>
     <a href="https://buymeacoffee.com/geotasoo" target="_blank" data-tip="커피보내기">☕</a>
@@ -1310,6 +1310,10 @@ let CITIES = [
       svg.transition().call(zoomBehavior.transform, d3.zoomIdentity);
     }
     countryColors.clear();
+    // 게임 중 칠해진 색상도 함께 제거 (초기화의 약속)
+    svg.selectAll('path.country').classed('gcor', false).classed('gwfl', false).classed('gpas', false);
+    removeGridLabels();
+    hideHintPop();
     el.colorPicker.value = "#FFD700";
     el.baseColor.value = "#ffffff";
     el.oceanColor.value = "#e0f0ff";
@@ -1716,9 +1720,8 @@ function exitGame() {
   clearInterval(G.intv);
   G.active = false;
   document.getElementById('ghud').classList.remove('on');
-  document.getElementById('toolbar').style.display = '';  // 툴바 먼저 복구
-  hideHintPop();
-  // 초기화 버튼 클릭 — 줌/중심점/색상/경위선 전부 리셋
+  document.getElementById('toolbar').style.display = '';
+  // 나머지는 '초기화' 버튼이 알아서 처리해줌 (게임 색상/힌트/경위선 등)
   document.getElementById('resetZoom').click();
 }
 
