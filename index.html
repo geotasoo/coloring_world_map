@@ -806,6 +806,22 @@ let CITIES = [
     });
   }
 
+  // ===== 게임용: 라벨 끄기 / 국경선 켜기 =====
+  window._gameSetLabels = function(visible) {
+    labelsVisible = visible;
+    updateLabels();
+    if (typeof setToggleEmoji === 'function') {
+      setToggleEmoji('toggleLabels', labelsVisible);
+    }
+  };
+  window._gameSetBorders = function(visible) {
+    bordersVisible = visible;
+    updateBorders();
+    if (typeof setToggleEmoji === 'function') {
+      setToggleEmoji('toggleBorders', bordersVisible);
+    }
+  };
+
   function renderCityDots() {
     const r = parseFloat(el.dotSize.value);
     const color = el.dotColor.value;
@@ -1695,6 +1711,10 @@ function startGame(emoji) {
   d3.selectAll('.grids1,.grids2').style('display','block');
   d3.selectAll('.equator1,.equator2').style('display','block');
   showGridLabels();
+  
+  // 7. Turn OFF country labels and turn ON borders
+  if (window._gameSetLabels) window._gameSetLabels(false);
+  if (window._gameSetBorders) window._gameSetBorders(true);
 
   updatePassBtn(); updateWrong();
   nextQ();
