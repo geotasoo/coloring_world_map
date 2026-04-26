@@ -185,6 +185,14 @@
     .hlbl{font-size:10px;opacity:.7;margin-bottom:1px;}
     #gtimer{font-size:28px;font-weight:bold;line-height:1;transition:color .3s;}
     #gtimer.red{color:#ff5252;}
+    
+    /* 10초 미만 화면 전체 깜빡임 */
+    #danger-flash { display:none; position:fixed; inset:0; pointer-events:none; z-index:9999; background:rgba(255,23,68,0.15); }
+    #danger-flash.on { display:block; animation:dangerFlash 1s infinite; }
+    @keyframes dangerFlash {
+      0%, 100% { opacity:1; }
+      50% { opacity:0; }
+    }
     #gscore{font-size:24px;font-weight:bold;line-height:1;}
     #gq{font-size:26px;font-weight:bold;letter-spacing:.3px;}
     #gqlbl{font-size:10px;opacity:.7;margin-bottom:3px;}
@@ -318,7 +326,7 @@
 <div id="main-container">
   <div id="map-wrap">
     <div id="helpLink">
-      <div>PC에서 사용을 권장합니다.<br>점찍기가 힘들어요. 게임도 힘들어요.</div>
+      <div>PC에서 사용을 권장합니다. 점찍기가 힘들어요.</div>
       <a href="https://geotasoo.tistory.com/entry/%EC%84%B8%EA%B3%84%EC%A7%80%EB%8F%84-%EC%83%89%EC%B9%A0%ED%95%98%EA%B8%B0-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80" target="_blank">사용법보기/생각나누기</a>
     </div>
     <svg id="map" preserveAspectRatio="xMidYMid meet"></svg>
@@ -413,6 +421,9 @@
 <div id="ghint-pop"></div>
 <div id="gfb"></div>
 <div id="gresult"></div>
+
+<!-- 10초 남았을 때 화면 전체 빨간 깜빡임 -->
+<div id="danger-flash"></div>
 <footer id="footer"><a href="https://geotasoo.tistory.com" target="_blank">@geotasoo</a></footer>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -1726,6 +1737,17 @@ function startGame(emoji) {
     var t = document.getElementById('gtimer');
     t.textContent = G.timer;
     t.className = G.timer <= 10 ? 'red' : '';
+    
+    // 10초 이하면 화면 전체 빨간 깜빡임
+    var flash = document.getElementById('danger-flash');
+    if (flash) {
+      if (G.timer <= 10 && G.timer > 0) {
+        flash.classList.add('on');
+      } else {
+        flash.classList.remove('on');
+      }
+    }
+    
     if (G.timer <= 0) endGame();
   }, 1000);
 }
@@ -1820,6 +1842,10 @@ function endGame() {
   hideHintPop();
   d3.selectAll('.grids1,.grids2').style('display','none');
   removeGridLabels();
+  
+  // 깜빡임 끄기
+  var flash = document.getElementById('danger-flash');
+  if (flash) flash.classList.remove('on');
   
   // Reset zoom to Korea center (0.8 scale) for result view
   if (window._gameProjection && window._gameZoomBehavior && window._gameSvg) {
