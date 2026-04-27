@@ -388,6 +388,39 @@
       • <b>💡 힌트</b>: 수도 좌표 표시 (단, <b>-1초</b> 패널티!)<br>
       • <b>🖱️ 조작법</b>: 마우스 스크롤로 확대/축소, 드래그하여 지도 이동
     </div>
+
+    <!-- 출제 모드 선택 -->
+    <div style="background:#fff8e1;border:1px solid #ffa726;border-radius:8px;padding:12px 14px;margin:12px 0;">
+      <div style="font-size:13px;font-weight:bold;color:#e65100;margin-bottom:8px;">📚 출제 범위 (대륙별 또는 수준별 중 선택)</div>
+      
+      <!-- 대륙별 -->
+      <div style="margin-bottom:10px;">
+        <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">🌍 대륙별 (복수 선택 가능)</div>
+        <div id="continent-checkboxes" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:13px;padding-left:20px;">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="아시아" checked> 🌏 아시아</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="유럽" checked> 🌍 유럽</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="아프리카" checked> 🌍 아프리카</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="북중미카리브해" checked> 🌎 북중미카리브해</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="남미" checked> 🌎 남미</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="오세아니아" checked> 🌏 오세아니아</label>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:6px;font-size:11px;justify-content:center;">
+          <button type="button" id="cb-all" style="background:#e3f2fd;border:1px solid #2196f3;border-radius:4px;padding:2px 8px;cursor:pointer;color:#1565c0;">전체 선택</button>
+          <button type="button" id="cb-none" style="background:#fff;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;color:#666;">전체 해제</button>
+        </div>
+      </div>
+
+      <!-- 수준별 -->
+      <div style="border-top:1px solid #ffe0b2;padding-top:10px;">
+        <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">📖 수준별</div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;padding-left:20px;">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="middle"> 🎒 중학교 지리 교과서에 나오는 30개 나라</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="high"> 🎓 고등학교 지리 교과서에 나오는 70개 나라</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="all"> 🌐 모든 나라</label>
+        </div>
+      </div>
+    </div>
+
     <div style="background:#ffebee;border:1px solid #ef5350;border-radius:8px;padding:10px 14px;margin:12px 0;font-size:12px;color:#c62828;line-height:1.6;">
       <b>⚠️ 주의:</b> 게임 종료 후 지도로 돌아올 때 모든 색칠과 점이 초기화됩니다!
     </div>
@@ -1510,13 +1543,128 @@ const COUNTRY_KO = {
   "South Sudan":"남수단","Spain":"스페인","Sri Lanka":"스리랑카","Sudan":"수단",
   "Suriname":"수리남","Sweden":"스웨덴","Switzerland":"스위스","Syria":"시리아",
   "São Tomé and Príncipe":"상투메프린시페","Tajikistan":"타지키스탄","Tanzania":"탄자니아",
-  "Thailand":"태국","Togo":"토고","Tonga":"통가","Trinidad and Tobago":"트리니다드토바고",
+  "Thailand":"타이","Togo":"토고","Tonga":"통가","Trinidad and Tobago":"트리니다드토바고",
   "Tunisia":"튀니지","Turkey":"튀르키예","Turkmenistan":"투르크메니스탄","Tuvalu":"투발루",
   "Uganda":"우간다","Ukraine":"우크라이나","United Arab Emirates":"아랍에미리트",
   "United Kingdom":"영국","United States of America":"미국","Uruguay":"우루과이",
   "Uzbekistan":"우즈베키스탄","Vanuatu":"바누아투","Vatican":"바티칸","Venezuela":"베네수엘라",
   "Vietnam":"베트남","Yemen":"예멘","Zambia":"잠비아","Zimbabwe":"짐바브웨"
 };
+
+// 나라-대륙 매핑 (중학교 교과서 기준)
+const COUNTRY_CONTINENT = {
+  // === 🌏 아시아 ===
+  "Afghanistan":"아시아","Bahrain":"아시아","Bangladesh":"아시아","Bhutan":"아시아",
+  "Brunei":"아시아","Cambodia":"아시아","China":"아시아","East Timor":"아시아",
+  "India":"아시아","Indonesia":"아시아","Iran":"아시아","Iraq":"아시아",
+  "Israel":"아시아","Japan":"아시아","Jordan":"아시아","Kazakhstan":"아시아",
+  "North Korea":"아시아","South Korea":"아시아","Kuwait":"아시아","Kyrgyzstan":"아시아",
+  "Laos":"아시아","Lebanon":"아시아","Malaysia":"아시아","Maldives":"아시아",
+  "Mongolia":"아시아","Myanmar":"아시아","Nepal":"아시아","Oman":"아시아",
+  "Pakistan":"아시아","Philippines":"아시아","Qatar":"아시아",
+  "Saudi Arabia":"아시아","Singapore":"아시아","Sri Lanka":"아시아","Syria":"아시아",
+  "Taiwan":"아시아","Tajikistan":"아시아","Thailand":"아시아","Turkey":"아시아",
+  "Turkmenistan":"아시아","United Arab Emirates":"아시아","Uzbekistan":"아시아",
+  "Vietnam":"아시아","Yemen":"아시아",
+  "Armenia":"아시아","Azerbaijan":"아시아","Georgia":"아시아",
+
+  // === 🌍 유럽 ===
+  "Albania":"유럽","Andorra":"유럽","Austria":"유럽","Belarus":"유럽",
+  "Belgium":"유럽","Bosnia and Herzegovina":"유럽","Bulgaria":"유럽","Croatia":"유럽",
+  "Cyprus":"유럽","Czechia":"유럽","Denmark":"유럽","Estonia":"유럽",
+  "Finland":"유럽","France":"유럽","Germany":"유럽","Greece":"유럽",
+  "Hungary":"유럽","Iceland":"유럽","Ireland":"유럽","Italy":"유럽",
+  "Latvia":"유럽","Liechtenstein":"유럽","Lithuania":"유럽","Luxembourg":"유럽",
+  "Malta":"유럽","Moldova":"유럽","Monaco":"유럽","Montenegro":"유럽",
+  "Netherlands":"유럽","North Macedonia":"유럽","Norway":"유럽","Poland":"유럽",
+  "Portugal":"유럽","Romania":"유럽","Russia":"유럽","San Marino":"유럽",
+  "Serbia":"유럽","Slovakia":"유럽","Slovenia":"유럽","Spain":"유럽",
+  "Sweden":"유럽","Switzerland":"유럽","Ukraine":"유럽","United Kingdom":"유럽",
+  "Vatican":"유럽",
+
+  // === 🌍 아프리카 ===
+  "Algeria":"아프리카","Angola":"아프리카","Benin":"아프리카","Botswana":"아프리카",
+  "Burkina Faso":"아프리카","Burundi":"아프리카","Cameroon":"아프리카","Cape Verde":"아프리카",
+  "Central African Republic":"아프리카","Chad":"아프리카","Comoros":"아프리카",
+  "Democratic Republic of the Congo":"아프리카","Republic of the Congo":"아프리카",
+  "Djibouti":"아프리카","Egypt":"아프리카","Equatorial Guinea":"아프리카",
+  "Eritrea":"아프리카","Eswatini":"아프리카","Ethiopia":"아프리카","Gabon":"아프리카",
+  "Gambia":"아프리카","Ghana":"아프리카","Guinea":"아프리카","Guinea-Bissau":"아프리카",
+  "Ivory Coast":"아프리카","Kenya":"아프리카","Lesotho":"아프리카","Liberia":"아프리카",
+  "Libya":"아프리카","Madagascar":"아프리카","Malawi":"아프리카","Mali":"아프리카",
+  "Mauritania":"아프리카","Mauritius":"아프리카","Morocco":"아프리카","Mozambique":"아프리카",
+  "Namibia":"아프리카","Niger":"아프리카","Nigeria":"아프리카","Rwanda":"아프리카",
+  "São Tomé and Príncipe":"아프리카","Senegal":"아프리카","Seychelles":"아프리카",
+  "Sierra Leone":"아프리카","Somalia":"아프리카","South Africa":"아프리카",
+  "South Sudan":"아프리카","Sudan":"아프리카","Tanzania":"아프리카","Togo":"아프리카",
+  "Tunisia":"아프리카","Uganda":"아프리카","Zambia":"아프리카","Zimbabwe":"아프리카",
+
+  // === 🌎 북중미카리브해 ===
+  "Antigua and Barbuda":"북중미카리브해","Bahamas":"북중미카리브해","Barbados":"북중미카리브해",
+  "Belize":"북중미카리브해","Canada":"북중미카리브해","Costa Rica":"북중미카리브해",
+  "Cuba":"북중미카리브해","Dominica":"북중미카리브해","Dominican Republic":"북중미카리브해",
+  "El Salvador":"북중미카리브해","Grenada":"북중미카리브해","Guatemala":"북중미카리브해",
+  "Haiti":"북중미카리브해","Honduras":"북중미카리브해","Jamaica":"북중미카리브해",
+  "Mexico":"북중미카리브해","Nicaragua":"북중미카리브해","Panama":"북중미카리브해",
+  "Saint Kitts and Nevis":"북중미카리브해","Saint Lucia":"북중미카리브해",
+  "Saint Vincent and the Grenadines":"북중미카리브해","Trinidad and Tobago":"북중미카리브해",
+  "United States of America":"북중미카리브해",
+
+  // === 🌎 남미 ===
+  "Argentina":"남미","Bolivia":"남미","Brazil":"남미","Chile":"남미",
+  "Colombia":"남미","Ecuador":"남미","Guyana":"남미","Paraguay":"남미",
+  "Peru":"남미","Suriname":"남미","Uruguay":"남미","Venezuela":"남미",
+
+  // === 🌏 오세아니아 ===
+  "Australia":"오세아니아","Fiji":"오세아니아","Kiribati":"오세아니아","Marshall Islands":"오세아니아",
+  "Micronesia":"오세아니아","Nauru":"오세아니아","New Zealand":"오세아니아","Palau":"오세아니아",
+  "Papua New Guinea":"오세아니아","Samoa":"오세아니아","Solomon Islands":"오세아니아",
+  "Tonga":"오세아니아","Tuvalu":"오세아니아","Vanuatu":"오세아니아"
+};
+
+// 6개 대륙 순서
+const CONTINENTS_FOR_GAME = ["아시아","유럽","아프리카","북중미카리브해","남미","오세아니아"];
+
+// 게임에서 제외할 나라 (출제 X)
+const EXCLUDED_FROM_GAME = ["Kosovo", "Palestine", "Somaliland", "Western Sahara"];
+
+// 중학교 필수 30개국
+const LEVEL_MIDDLE = [
+  // 아시아 (11) - 튀르키예 포함
+  "South Korea", "Japan", "China", "India", "Thailand", "Vietnam", 
+  "Indonesia", "Kazakhstan", "Saudi Arabia", "United Arab Emirates", "Turkey",
+  // 유럽 (6)
+  "United Kingdom", "Germany", "France", "Spain", "Italy", "Russia",
+  // 아프리카 (5)
+  "Algeria", "Egypt", "Nigeria", "Ethiopia", "South Africa",
+  // 북중미카리브해 (3)
+  "United States of America", "Canada", "Mexico",
+  // 남미 (3)
+  "Brazil", "Bolivia", "Argentina",
+  // 오세아니아 (2)
+  "Australia", "New Zealand"
+];
+
+// 고등학교 필수 70개국 (중학 30 + 추가 40)
+const LEVEL_HIGH = [
+  // 중학 30개 (그대로 포함)
+  ...LEVEL_MIDDLE,
+  // 아시아 추가 14개 (네팔 제외, 카타르 포함)
+  "Iran", "Iraq", "Israel", "Singapore", "Malaysia", 
+  "Myanmar", "Philippines", "Pakistan", "Cambodia", 
+  "Bangladesh", "Qatar", "Sri Lanka", "Mongolia", "Syria",
+  // 유럽 추가 15개 (아일랜드 포함)
+  "Iceland", "Norway", "Sweden", "Finland", "Switzerland", 
+  "Netherlands", "Ukraine", "Greece", "Czechia", "Belgium",
+  "Portugal", "Denmark", "Poland", "Austria", "Ireland",
+  // 아프리카 추가 4개
+  "Kenya", "Democratic Republic of the Congo", "Zambia", "Morocco",
+  // 북중미 추가 2개
+  "Cuba", "Panama",
+  // 남미 추가 5개
+  "Colombia", "Peru", "Chile", "Venezuela", "Ecuador"
+  // 오세아니아 추가 0개
+];
 
 // 수도 좌표 힌트
 const CAPITALS = {
@@ -1617,8 +1765,47 @@ let LB = [];  // 세션 순위표
 
   // ===== 시작 버튼 =====
   startBtn.addEventListener('click', function() {
+    var modeRadio = document.querySelector('input[name="game-mode"]:checked');
+    var mode = modeRadio ? modeRadio.value : 'continent';
+    
+    // 수준별 라디오 안 선택됨 → 대륙별 모드로 간주
+    if (!modeRadio) {
+      var checked = document.querySelectorAll('.continent-cb:checked').length;
+      if (checked === 0) {
+        alert('최소 1개 이상의 대륙을 선택하거나 수준을 선택해주세요!');
+        return;
+      }
+    }
+    
     document.getElementById('game-overlay').classList.remove('active');
-    startGame(null); // No emoji needed
+    startGame(null);
+  });
+
+  // ===== 대륙 전체 선택/해제 =====
+  document.getElementById('cb-all').addEventListener('click', function() {
+    document.querySelectorAll('.continent-cb').forEach(function(cb) { cb.checked = true; });
+    // 수준별 라디오 해제
+    document.querySelectorAll('input[name="game-mode"]').forEach(function(r) { r.checked = false; });
+  });
+  document.getElementById('cb-none').addEventListener('click', function() {
+    document.querySelectorAll('.continent-cb').forEach(function(cb) { cb.checked = false; });
+  });
+
+  // ===== 대륙 체크박스 클릭 시 수준별 라디오 해제 =====
+  document.querySelectorAll('.continent-cb').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      // 수준별 라디오 해제
+      document.querySelectorAll('input[name="game-mode"]').forEach(function(r) { r.checked = false; });
+    });
+  });
+
+  // ===== 수준별 라디오 클릭 시 대륙 체크박스 해제 =====
+  document.querySelectorAll('input[name="game-mode"]').forEach(function(r) {
+    r.addEventListener('change', function() {
+      if (r.checked) {
+        document.querySelectorAll('.continent-cb').forEach(function(cb) { cb.checked = false; });
+      }
+    });
   });
 
   // ===== 나가기 버튼 =====
@@ -1654,12 +1841,44 @@ function getDiff(score) {
 }
 
 function buildQueue(maxDiff) {
-  var keys = Object.keys(COUNTRY_KO);
-  // Filter only countries that exist in the map
-  var validKeys = keys.filter(function(en) {
+  // 게임 모드 확인
+  // 수준별 라디오가 선택되어 있으면 수준별, 아니면 대륙별
+  var modeRadio = document.querySelector('input[name="game-mode"]:checked');
+  var mode = modeRadio ? modeRadio.value : 'continent';
+  
+  var pool = [];
+  
+  if (mode === 'middle') {
+    // 중학교 지리 교과서 30개
+    pool = LEVEL_MIDDLE.slice();
+  } else if (mode === 'high') {
+    // 고등학교 교과서 70개
+    pool = LEVEL_HIGH.slice();
+  } else if (mode === 'all') {
+    // 모든 나라 (제외 나라 빼고)
+    pool = Object.keys(COUNTRY_KO).filter(function(en) {
+      return EXCLUDED_FROM_GAME.indexOf(en) === -1;
+    });
+  } else {
+    // 대륙별
+    var selectedContinents = [];
+    document.querySelectorAll('.continent-cb:checked').forEach(function(cb) {
+      selectedContinents.push(cb.value);
+    });
+    
+    pool = Object.keys(COUNTRY_KO).filter(function(en) {
+      if (EXCLUDED_FROM_GAME.indexOf(en) !== -1) return false;
+      var continent = COUNTRY_CONTINENT[en];
+      return continent && selectedContinents.indexOf(continent) !== -1;
+    });
+  }
+  
+  // 지도에 실제 존재하는 나라만 필터링
+  var validKeys = pool.filter(function(en) {
     return window._gameFeatureByName && window._gameFeatureByName.has(en);
   });
-  // Full random shuffle - no difficulty filtering
+  
+  // 랜덤 셔플
   return validKeys.sort(function(){ return Math.random() - 0.5; });
 }
 
@@ -1727,6 +1946,10 @@ function startGame(emoji) {
   // 7. Turn OFF country labels and turn ON borders
   if (window._gameSetLabels) window._gameSetLabels(false);
   if (window._gameSetBorders) window._gameSetBorders(true);
+  
+  // 8. 호수 기본값으로 리셋 (전체 호수 표시 끄기, 주요 호수만)
+  var lakeDefaultBtn = document.getElementById('btn-lake-default');
+  if (lakeDefaultBtn) lakeDefaultBtn.click();
 
   updatePassBtn(); updateWrong();
   nextQ();
@@ -1753,12 +1976,10 @@ function startGame(emoji) {
 }
 
 function nextQ() {
-  // 난이도 업그레이드 체크
-  var newDiff = getDiff(G.score);
-  var curDiff = getDiff(Math.max(0, G.score - 1));
-  if (newDiff > curDiff || G.idx >= G.queue.length) {
-    G.queue = buildQueue(newDiff);
-    G.idx = 0;
+  // 큐가 끝났으면 게임 종료 (남은 시간 무시)
+  if (G.idx >= G.queue.length) {
+    endGame();
+    return;
   }
   G.wrongCnt = 0; G.hintUsed = false;
   updateWrong();
@@ -2011,30 +2232,39 @@ function showGridLabels() {
 
   // 줌 transform 반영
   var t = d3.zoomTransform(document.getElementById('map'));
-  function txy(lng, lat) {
+  var vw = window.innerWidth, vh = window.innerHeight;
+  
+  function txy(lng, lat, offsetX) {
     var raw = proj([lng, lat]);
     if (!raw) return null;
-    return [raw[0] * t.k + t.x, raw[1] * t.k + t.y];
+    return [(raw[0] + (offsetX || 0)) * t.k + t.x, raw[1] * t.k + t.y];
   }
 
-  var vw = window.innerWidth, vh = window.innerHeight;
+  // 화면 너비 (지도 한 장의 너비)
+  var mapWidth = vw;
 
-  // 위선 라벨 (30° 간격)
+  // 위선 라벨 (30° 간격) - 두 지도 모두에 표시
   [60, 30, 0, -30, -60].forEach(function(lat) {
-    var pt = txy(-170, lat);
-    if (!pt || pt[1] < 10 || pt[1] > vh - 10) return;
-    var label = lat === 0 ? '0° (적도)' : (lat > 0 ? lat + '°N' : Math.abs(lat) + '°S');
-    svg.append('text').attr('class','grid-coord-label')
-      .attr('x', 6).attr('y', pt[1] - 3).text(label);
+    [0, mapWidth].forEach(function(offsetX) {
+      var pt = txy(-170, lat, offsetX);
+      if (!pt || pt[1] < 10 || pt[1] > vh - 10) return;
+      if (pt[0] < -50 || pt[0] > vw + 50) return; // 화면 밖이면 스킵
+      var label = lat === 0 ? '0° (적도)' : (lat > 0 ? lat + '°N' : Math.abs(lat) + '°S');
+      svg.append('text').attr('class','grid-coord-label')
+        .attr('x', pt[0] + 6).attr('y', pt[1] - 3).text(label);
+    });
   });
 
-  // 경선 라벨 (30° 간격)
+  // 경선 라벨 (30° 간격) - 두 지도 모두에 표시
   [-150,-120,-90,-60,-30,0,30,60,90,120,150].forEach(function(lng) {
-    var pt = txy(lng, 72);
-    if (!pt || pt[0] < 10 || pt[0] > vw - 10) return;
-    var label = lng === 0 ? '0° (본초자오선)' : (lng > 0 ? lng+'°E' : Math.abs(lng)+'°W');
-    svg.append('text').attr('class','grid-coord-label')
-      .attr('x', pt[0]).attr('y', 14).attr('text-anchor','middle').text(label);
+    [0, mapWidth].forEach(function(offsetX) {
+      var pt = txy(lng, 72, offsetX);
+      if (!pt) return;
+      if (pt[0] < 10 || pt[0] > vw - 10) return;
+      var label = lng === 0 ? '0° (본초자오선)' : (lng > 0 ? lng+'°E' : Math.abs(lng)+'°W');
+      svg.append('text').attr('class','grid-coord-label')
+        .attr('x', pt[0]).attr('y', 14).attr('text-anchor','middle').text(label);
+    });
   });
 }
 
