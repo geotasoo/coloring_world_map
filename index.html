@@ -400,8 +400,8 @@
           <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="아시아" checked> 🌏 아시아</label>
           <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="유럽" checked> 🌍 유럽</label>
           <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="아프리카" checked> 🌍 아프리카</label>
-          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="북중미카리브해" checked> 🌎 북중미카리브해</label>
-          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="남미" checked> 🌎 남미</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="북아메리카" checked> 🌎 북아메리카</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="남아메리카" checked> 🌎 남아메리카</label>
           <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="오세아니아" checked> 🌏 오세아니아</label>
         </div>
         <div style="display:flex;gap:6px;margin-top:6px;font-size:11px;justify-content:center;">
@@ -1599,21 +1599,21 @@ const COUNTRY_CONTINENT = {
   "South Sudan":"아프리카","Sudan":"아프리카","Tanzania":"아프리카","Togo":"아프리카",
   "Tunisia":"아프리카","Uganda":"아프리카","Zambia":"아프리카","Zimbabwe":"아프리카",
 
-  // === 🌎 북중미카리브해 ===
-  "Antigua and Barbuda":"북중미카리브해","Bahamas":"북중미카리브해","Barbados":"북중미카리브해",
-  "Belize":"북중미카리브해","Canada":"북중미카리브해","Costa Rica":"북중미카리브해",
-  "Cuba":"북중미카리브해","Dominica":"북중미카리브해","Dominican Republic":"북중미카리브해",
-  "El Salvador":"북중미카리브해","Grenada":"북중미카리브해","Guatemala":"북중미카리브해",
-  "Haiti":"북중미카리브해","Honduras":"북중미카리브해","Jamaica":"북중미카리브해",
-  "Mexico":"북중미카리브해","Nicaragua":"북중미카리브해","Panama":"북중미카리브해",
-  "Saint Kitts and Nevis":"북중미카리브해","Saint Lucia":"북중미카리브해",
-  "Saint Vincent and the Grenadines":"북중미카리브해","Trinidad and Tobago":"북중미카리브해",
-  "United States of America":"북중미카리브해",
+  // === 🌎 북아메리카 ===
+  "Antigua and Barbuda":"북아메리카","Bahamas":"북아메리카","Barbados":"북아메리카",
+  "Belize":"북아메리카","Canada":"북아메리카","Costa Rica":"북아메리카",
+  "Cuba":"북아메리카","Dominica":"북아메리카","Dominican Republic":"북아메리카",
+  "El Salvador":"북아메리카","Grenada":"북아메리카","Guatemala":"북아메리카",
+  "Haiti":"북아메리카","Honduras":"북아메리카","Jamaica":"북아메리카",
+  "Mexico":"북아메리카","Nicaragua":"북아메리카","Panama":"북아메리카",
+  "Saint Kitts and Nevis":"북아메리카","Saint Lucia":"북아메리카",
+  "Saint Vincent and the Grenadines":"북아메리카","Trinidad and Tobago":"북아메리카",
+  "United States of America":"북아메리카",
 
-  // === 🌎 남미 ===
-  "Argentina":"남미","Bolivia":"남미","Brazil":"남미","Chile":"남미",
-  "Colombia":"남미","Ecuador":"남미","Guyana":"남미","Paraguay":"남미",
-  "Peru":"남미","Suriname":"남미","Uruguay":"남미","Venezuela":"남미",
+  // === 🌎 남아메리카 ===
+  "Argentina":"남아메리카","Bolivia":"남아메리카","Brazil":"남아메리카","Chile":"남아메리카",
+  "Colombia":"남아메리카","Ecuador":"남아메리카","Guyana":"남아메리카","Paraguay":"남아메리카",
+  "Peru":"남아메리카","Suriname":"남아메리카","Uruguay":"남아메리카","Venezuela":"남아메리카",
 
   // === 🌏 오세아니아 ===
   "Australia":"오세아니아","Fiji":"오세아니아","Kiribati":"오세아니아","Marshall Islands":"오세아니아",
@@ -1623,7 +1623,7 @@ const COUNTRY_CONTINENT = {
 };
 
 // 6개 대륙 순서
-const CONTINENTS_FOR_GAME = ["아시아","유럽","아프리카","북중미카리브해","남미","오세아니아"];
+const CONTINENTS_FOR_GAME = ["아시아","유럽","아프리카","북아메리카","남아메리카","오세아니아"];
 
 // 게임에서 제외할 나라 (출제 X)
 const EXCLUDED_FROM_GAME = ["Kosovo", "Palestine", "Somaliland", "Western Sahara"];
@@ -1637,9 +1637,9 @@ const LEVEL_MIDDLE = [
   "United Kingdom", "Germany", "France", "Spain", "Italy", "Russia",
   // 아프리카 (5)
   "Algeria", "Egypt", "Nigeria", "Ethiopia", "South Africa",
-  // 북중미카리브해 (3)
+  // 북아메리카 (3)
   "United States of America", "Canada", "Mexico",
-  // 남미 (3)
+  // 남아메리카 (3)
   "Brazil", "Bolivia", "Argentina",
   // 오세아니아 (2)
   "Australia", "New Zealand"
@@ -1661,7 +1661,7 @@ const LEVEL_HIGH = [
   "Kenya", "Democratic Republic of the Congo", "Zambia", "Morocco",
   // 북중미 추가 2개
   "Cuba", "Panama",
-  // 남미 추가 5개
+  // 남아메리카 추가 5개
   "Colombia", "Peru", "Chile", "Venezuela", "Ecuador"
   // 오세아니아 추가 0개
 ];
