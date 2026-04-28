@@ -290,20 +290,24 @@
       border: 1px solid #2196f3;
       border-radius: 8px;
       padding: 8px 10px;
-      width: 280px;
+      width: 440px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
       z-index: 10001;
       font-style: normal;
       font-family: sans-serif;
       font-weight: normal;
       color: #333;
-      font-size: 11px;
+      font-size: 10px;
       line-height: 1.4;
       text-align: left;
       cursor: default;
+      column-count: 2;
+      column-gap: 12px;
+      column-rule: 1px solid #e3f2fd;
     }
     .info-tooltip .continent-group {
-      margin-bottom: 3px;
+      margin-bottom: 4px;
+      break-inside: avoid;
     }
     .info-tooltip .continent-name {
       color: #e65100;
