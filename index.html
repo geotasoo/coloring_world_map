@@ -290,24 +290,20 @@
       border: 1px solid #2196f3;
       border-radius: 8px;
       padding: 8px 10px;
-      width: 440px;
+      width: 300px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.15);
       z-index: 10001;
       font-style: normal;
       font-family: sans-serif;
       font-weight: normal;
       color: #333;
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.4;
       text-align: left;
       cursor: default;
-      column-count: 2;
-      column-gap: 12px;
-      column-rule: 1px solid #e3f2fd;
     }
     .info-tooltip .continent-group {
-      margin-bottom: 4px;
-      break-inside: avoid;
+      margin-bottom: 3px;
     }
     .info-tooltip .continent-name {
       color: #e65100;
@@ -452,10 +448,26 @@
 
     <!-- 출제 모드 선택 -->
     <div style="background:#fff8e1;border:1px solid #ffa726;border-radius:8px;padding:12px 14px;margin:12px 0;">
-      <div style="font-size:13px;font-weight:bold;color:#e65100;margin-bottom:8px;">📚 출제 범위 (대륙별 또는 수준별 중 선택)</div>
+      <div style="font-size:13px;font-weight:bold;color:#e65100;margin-bottom:8px;">📚 출제 범위 (수준별 또는 대륙별 중 선택)</div>
       
-      <!-- 대륙별 -->
+      <!-- 수준별 -->
       <div style="margin-bottom:10px;">
+        <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">📖 수준별</div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;padding-left:20px;">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="radio" name="game-mode" value="middle"> 🎒 중학교 지리 교과서에 나오는 30개 나라
+            <span class="info-icon" id="info-middle">i<div class="info-tooltip" id="tooltip-middle">로딩 중...</div></span>
+          </label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="radio" name="game-mode" value="high"> 🎓 고등학교 지리 교과서에 나오는 70개 나라
+            <span class="info-icon" id="info-high">i<div class="info-tooltip" id="tooltip-high">로딩 중...</div></span>
+          </label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="all"> 🌐 모든 나라</label>
+        </div>
+      </div>
+
+      <!-- 대륙별 -->
+      <div style="border-top:1px solid #ffe0b2;padding-top:10px;">
         <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">🌍 대륙별 (복수 선택 가능)</div>
         <div id="continent-checkboxes" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:13px;padding-left:20px;">
           <label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" class="continent-cb" value="아시아" checked> 🌏 아시아</label>
@@ -468,22 +480,6 @@
         <div style="display:flex;gap:6px;margin-top:6px;font-size:11px;justify-content:center;">
           <button type="button" id="cb-all" style="background:#e3f2fd;border:1px solid #2196f3;border-radius:4px;padding:2px 8px;cursor:pointer;color:#1565c0;">전체 선택</button>
           <button type="button" id="cb-none" style="background:#fff;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;color:#666;">전체 해제</button>
-        </div>
-      </div>
-
-      <!-- 수준별 -->
-      <div style="border-top:1px solid #ffe0b2;padding-top:10px;">
-        <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">📖 수준별</div>
-        <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;padding-left:20px;">
-          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
-            <input type="radio" name="game-mode" value="middle"> 🎒 중학교 지리 교과서에 나오는 30개 나라
-            <span class="info-icon" id="info-middle">i<div class="info-tooltip" id="tooltip-middle">로딩 중...</div></span>
-          </label>
-          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
-            <input type="radio" name="game-mode" value="high"> 🎓 고등학교 지리 교과서에 나오는 70개 나라
-            <span class="info-icon" id="info-high">i<div class="info-tooltip" id="tooltip-high">로딩 중...</div></span>
-          </label>
-          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="all"> 🌐 모든 나라</label>
         </div>
       </div>
     </div>
