@@ -259,6 +259,71 @@
     }
     .gwfl{fill:#ef5350!important;}
     .gpas{fill:#ffa726!important;}
+    
+    /* 수준별 정보 아이콘 + 툴팁 */
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2196f3;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: help;
+      margin-left: 4px;
+      position: relative;
+      font-style: italic;
+      font-family: serif;
+    }
+    .info-icon:hover .info-tooltip {
+      display: block;
+    }
+    .info-tooltip {
+      display: none;
+      position: absolute;
+      left: 24px;
+      top: -8px;
+      background: #fff;
+      border: 1px solid #2196f3;
+      border-radius: 8px;
+      padding: 10px 14px;
+      width: 320px;
+      max-height: 380px;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      z-index: 10001;
+      font-style: normal;
+      font-family: sans-serif;
+      font-weight: normal;
+      color: #333;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: left;
+      cursor: default;
+    }
+    .info-tooltip h4 {
+      margin: 0 0 6px;
+      color: #1565c0;
+      font-size: 13px;
+      border-bottom: 1px solid #e3f2fd;
+      padding-bottom: 4px;
+    }
+    .info-tooltip .continent-group {
+      margin-bottom: 6px;
+    }
+    .info-tooltip .continent-name {
+      color: #e65100;
+      font-weight: bold;
+      font-size: 11px;
+    }
+    .info-tooltip .country-list {
+      color: #444;
+      font-size: 11px;
+      padding-left: 4px;
+    }
   </style>
 </head>
 <body>
@@ -414,8 +479,14 @@
       <div style="border-top:1px solid #ffe0b2;padding-top:10px;">
         <div style="font-weight:bold;font-size:13px;color:#1565c0;margin-bottom:6px;text-align:center;">📖 수준별</div>
         <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;padding-left:20px;">
-          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="middle"> 🎒 중학교 지리 교과서에 나오는 30개 나라</label>
-          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="high"> 🎓 고등학교 지리 교과서에 나오는 70개 나라</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="radio" name="game-mode" value="middle"> 🎒 중학교 지리 교과서에 나오는 30개 나라
+            <span class="info-icon" id="info-middle">i<div class="info-tooltip" id="tooltip-middle">로딩 중...</div></span>
+          </label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <input type="radio" name="game-mode" value="high"> 🎓 고등학교 지리 교과서에 나오는 70개 나라
+            <span class="info-icon" id="info-high">i<div class="info-tooltip" id="tooltip-high">로딩 중...</div></span>
+          </label>
           <label style="cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="radio" name="game-mode" value="all"> 🌐 모든 나라</label>
         </div>
       </div>
@@ -1665,6 +1736,43 @@ const LEVEL_HIGH = [
   "Colombia", "Peru", "Chile", "Venezuela", "Ecuador"
   // 오세아니아 추가 0개
 ];
+
+// 수준별 나라 리스트 → 툴팁 HTML 생성 (대륙별 그룹핑)
+function buildLevelTooltip(countries, totalLabel) {
+  // 대륙별로 그룹핑
+  var byContinent = {};
+  CONTINENTS_FOR_GAME.forEach(function(c) { byContinent[c] = []; });
+  
+  countries.forEach(function(en) {
+    var cont = COUNTRY_CONTINENT[en] || '기타';
+    var ko = COUNTRY_KO[en] || en;
+    if (!byContinent[cont]) byContinent[cont] = [];
+    byContinent[cont].push(ko);
+  });
+  
+  var html = '<h4>' + totalLabel + '</h4>';
+  CONTINENTS_FOR_GAME.forEach(function(c) {
+    var list = byContinent[c];
+    if (!list || list.length === 0) return;
+    html += '<div class="continent-group">';
+    html += '<div class="continent-name">' + c + ' (' + list.length + '개)</div>';
+    html += '<div class="country-list">' + list.join(', ') + '</div>';
+    html += '</div>';
+  });
+  return html;
+}
+
+// DOM 로드 후 툴팁 채우기
+document.addEventListener('DOMContentLoaded', function() {
+  var tipMid = document.getElementById('tooltip-middle');
+  var tipHigh = document.getElementById('tooltip-high');
+  if (tipMid) {
+    tipMid.innerHTML = buildLevelTooltip(LEVEL_MIDDLE, '🎒 중학교 지리 교과서 필수 ' + LEVEL_MIDDLE.length + '개국');
+  }
+  if (tipHigh) {
+    tipHigh.innerHTML = buildLevelTooltip(LEVEL_HIGH, '🎓 고등학교 지리 교과서 필수 ' + LEVEL_HIGH.length + '개국');
+  }
+});
 
 // 수도 좌표 힌트
 const CAPITALS = {
