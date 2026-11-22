@@ -743,3 +743,6 @@ body.point-mode #stage::after { content: ''; position: absolute; top: 0; left: 0
 /* 대기 반영: 한 줄에 두 항목 */
 .layers-panel .row.pair { justify-content: flex-start; }
 .layers-panel .row.pair > .sw { flex: 1 1 0; min-width: 0; }
+.jump.jump-geois img { width: 26px; height: 26px; display: block; }
+.jump.jump-desk { border: 0; cursor: pointer; font-family: inherit; font-size: 16px; padding: 0 11px; }
+.jump.jump-desk:hover { background: #FFE27A; }
