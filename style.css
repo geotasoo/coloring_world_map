@@ -750,3 +750,6 @@ body.point-mode #stage::after { content: ''; position: absolute; top: 0; left: 0
 /* 게임 바로가기 🎮 크기 */
 .jump.jump-game { font-size: 20px; line-height: 1; }
 @media (max-width: 719px) { .jump.jump-game { font-size: 18px; } }
+
+/* 🎮 위아래 가운데 맞춤 */
+.jump.jump-game .em { display: block; line-height: 1; transform: translateY(-2px); }
