@@ -22,10 +22,10 @@
     </div>
   </div>
   <div class="actions">
-    <a class="jump jump-flag icon-only" href="https://geotasoo.github.io/coloring_korea_map/" target="_blank" rel="noopener" title="한반도 지도 색칠하고, 도형찍고, 라벨입력 (새 창)"><img src="icon-korea.svg" width="32" height="26" alt="" aria-hidden="true"></a>
-    <a class="jump" href="https://geotasoo.iwinv.net/worldgame" title="세계지도에서 나라찾기 게임으로 이동">🎮 </a>
+    <a class="jump jump-flag icon-only" href="https://geotasoo.github.io/coloring_korea_map/" target="_blank" rel="noopener" title="한반도 지도 색칠하고, 도형찍고, 라벨입력"><img src="icon-korea.svg" width="32" height="26" alt="" aria-hidden="true"></a>
+    <a target="_blank" rel="noopener" class="jump jump-game" href="https://geotasoo.iwinv.net/worldgame" title="세계지도에서 나라찾기 게임으로 이동">🎮 </a>
     <a class="jump jump-geois icon-only" href="https://geois.my/" target="_blank" rel="noopener" title="geois.my로 이동"><img src="icon-geois.png" width="26" height="26" alt="" aria-hidden="true"></a>
-    <button class="jump jump-desk" id="shortcutBtn" type="button" title="바로가기 파일 내려받기">🖥️</button>
+    <a class="jump jump-desk" href="world-shortcut.url" download="세계지도 색칠하기.url" title="바로가기 파일 내려받기">🖥️</a>
     <button class="btn" id="undo" data-tip="되돌리기 (Ctrl+Z)" aria-label="되돌리기" disabled>
       <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
     </button>
@@ -370,19 +370,6 @@
 <script src="lib/topojson-client.min.js"></script>
 <script src="data/places.js?v=20261117t"></script>
 <script src="app.js?v=20261117t"></script>
-<script>
-(function () {
-  const btn = document.getElementById('shortcutBtn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    const body = '[InternetShortcut]\r\nURL=https://geotasoo.github.io/coloring_world_map/\r\n';
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([body], { type: 'text/plain' }));
-    a.download = '세계지도 색칠하기.url';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  });
-})();
-</script>
+
 </body>
 </html>

@@ -746,3 +746,7 @@ body.point-mode #stage::after { content: ''; position: absolute; top: 0; left: 0
 .jump.jump-geois img { width: 26px; height: 26px; display: block; }
 .jump.jump-desk { border: 0; cursor: pointer; font-family: inherit; font-size: 16px; padding: 0 11px; }
 .jump.jump-desk:hover { background: #FFE27A; }
+
+/* 게임 바로가기 🎮 크기 */
+.jump.jump-game { font-size: 20px; line-height: 1; }
+@media (max-width: 719px) { .jump.jump-game { font-size: 18px; } }
